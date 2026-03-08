@@ -257,6 +257,16 @@
     font-size: 13px;
 }
 
+.ait-notepad-editor:focus,
+.ait-notepad-editor:focus-visible,
+.ait-notepad-editor:active {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 /* ── 调整大小手柄（8 方向，与 runner 保持一致）── */
 .ait-notepad-resize-handle {
     position: absolute;
