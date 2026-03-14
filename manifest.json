@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "short_name": "AI Timeline",
-  "version": "4.4.3",
+  "version": "4.4.5",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "author": "yanchao hou",
