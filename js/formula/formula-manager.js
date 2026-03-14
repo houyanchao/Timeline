@@ -79,7 +79,9 @@ class FormulaManager {
         try {
             const r = await chrome.storage.local.get(['formulaLatexEnabled', 'formulaMathMLEnabled']);
             this._latexEnabled = r.formulaLatexEnabled !== false;
-            this._mathmlEnabled = r.formulaMathMLEnabled === true;
+            // MathML 暂时禁用，后续重新实现
+            // this._mathmlEnabled = r.formulaMathMLEnabled === true;
+            this._mathmlEnabled = false;
         } catch (e) {}
 
         // ✅ 始终创建降级方案的 tooltip 和反馈元素（以防全局管理器失败）
@@ -101,11 +103,12 @@ class FormulaManager {
      */
     async checkIfEnabled() {
         try {
-            const result = await chrome.storage.local.get(['formulaEnabled', 'formulaLatexEnabled', 'formulaMathMLEnabled']);
+            const result = await chrome.storage.local.get(['formulaLatexEnabled', 'formulaMathMLEnabled']);
             const latexOn = result.formulaLatexEnabled !== false;
-            const mathmlOn = result.formulaMathMLEnabled === true;
-            if (!latexOn && !mathmlOn) return false;
-            return result.formulaEnabled !== false;
+            // MathML 暂时禁用，后续重新实现
+            // const mathmlOn = result.formulaMathMLEnabled === true;
+            const mathmlOn = false;
+            return latexOn || mathmlOn;
         } catch (e) {
             console.error('[FormulaManager] Failed to check if enabled:', e);
             // 出错默认开启
@@ -120,10 +123,6 @@ class FormulaManager {
     attachStorageListener() {
         this.storageListener = (changes, areaName) => {
             if (areaName !== 'local') return;
-            if (changes.formulaEnabled) {
-                const newValue = changes.formulaEnabled.newValue;
-                console.log('[FormulaManager] Feature enabled changed to:', newValue !== false);
-            }
             if (changes.formulaLatexEnabled) {
                 this._latexEnabled = changes.formulaLatexEnabled.newValue !== false;
             }
@@ -196,7 +195,7 @@ class FormulaManager {
         if (!formulaElement.isConnected) return;
         
         // 前置提取逻辑：使用独立的 LatexExtractor
-        let latexCode = LatexExtractor.extract(formulaElement);
+        let latexCode = FormulaSourceParser.parseLatex(formulaElement);
         if (!latexCode) {
             // 无法提取公式，不添加交互功能
             return;
@@ -370,7 +369,7 @@ class FormulaManager {
      */
     async _copyAsMathML(formulaElement) {
         try {
-            const mathml = LatexExtractor.extractMathML(formulaElement);
+            const mathml = FormulaSourceParser.parseMathML(formulaElement);
             if (!mathml) {
                 this.showCopyFeedback('⚠ 无法获取 MathML', formulaElement, true);
                 return;

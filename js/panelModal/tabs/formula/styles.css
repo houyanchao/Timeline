@@ -3,6 +3,11 @@
  * 复制 LaTeX 公式设置样式
  */
 
+/* MathML 开关暂时隐藏，后续重新实现 */
+.mathml-section-hidden {
+    display: none !important;
+}
+
 /* 设置容器 */
 .formula-settings {
     padding: 0;

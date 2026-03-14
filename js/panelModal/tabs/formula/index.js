@@ -1,10 +1,9 @@
 /**
- * Formula Tab - 复制公式设置
+ * FormulaTab - 公式复制功能的设置面板
  * 
- * 功能：
- * - LaTeX 开关：独立控制 LaTeX 复制（带格式选择）
- * - MathML 开关：独立控制 MathML 复制（Word 兼容）
- * - 两者都开启时，点击公式弹出菜单选择
+ * 提供公式复制相关的用户配置界面，包括：
+ * - LaTeX 复制开关及输出格式选择
+ * - MathML 复制开关（当前通过 CSS 隐藏，后续重新实现）
  */
 
 class FormulaTab extends BaseTab {
@@ -18,6 +17,10 @@ class FormulaTab extends BaseTab {
         </svg>`;
     }
     
+    /**
+     * 构建设置面板 DOM 结构
+     * 包含 MathML 开关区域（CSS 隐藏）和 LaTeX 开关区域（含格式选项）
+     */
     render() {
         const container = document.createElement('div');
         container.className = 'formula-settings';
@@ -31,7 +34,7 @@ class FormulaTab extends BaseTab {
         `).join('');
         
         container.innerHTML = `
-            <div class="setting-section">
+            <div class="setting-section mathml-section-hidden">
                 <div class="setting-item">
                     <div class="setting-info">
                         <div class="setting-label">${chrome.i18n.getMessage('formulaMathMLTitle') || '复制 MathML 公式'}</div>
@@ -67,6 +70,12 @@ class FormulaTab extends BaseTab {
         return container;
     }
     
+    /**
+     * Tab 激活后初始化：从 Storage 读取开关状态并绑定事件
+     * - 读取 LaTeX / MathML 开关状态和复制格式偏好
+     * - 绑定开关切换和格式选择的 change 事件
+     * - 当所有开关都关闭时，同步禁用整个公式复制功能
+     */
     async mounted() {
         super.mounted();
         
@@ -107,12 +116,6 @@ class FormulaTab extends BaseTab {
                 if (formatSection) {
                     formatSection.style.display = enabled ? 'block' : 'none';
                 }
-                // 至少保持一个开启
-                if (!enabled && !mathmlToggle.checked) {
-                    await chrome.storage.local.set({ formulaEnabled: false });
-                } else {
-                    await chrome.storage.local.set({ formulaEnabled: true });
-                }
             } catch (e) {
                 console.error('[FormulaTab] Failed to save state:', e);
                 latexToggle.checked = !latexToggle.checked;
@@ -123,11 +126,6 @@ class FormulaTab extends BaseTab {
             try {
                 const enabled = e.target.checked;
                 await chrome.storage.local.set({ formulaMathMLEnabled: enabled });
-                if (!enabled && !latexToggle.checked) {
-                    await chrome.storage.local.set({ formulaEnabled: false });
-                } else {
-                    await chrome.storage.local.set({ formulaEnabled: true });
-                }
             } catch (e) {
                 console.error('[FormulaTab] Failed to save state:', e);
                 mathmlToggle.checked = !mathmlToggle.checked;
@@ -145,8 +143,10 @@ class FormulaTab extends BaseTab {
         });
     }
     
+    /**
+     * Tab 卸载时清理所有事件监听和 DOM 引用
+     */
     unmounted() {
         super.unmounted();
     }
 }
-

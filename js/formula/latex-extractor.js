@@ -1,5 +1,5 @@
 /**
- * LaTeX Extractor - LaTeX 源码提取器
+ * FormulaSourceParser - 公式源码解析器
  * 支持多种平台的公式格式，完全独立的提取逻辑
  * 
  * 支持的平台：
@@ -12,15 +12,15 @@
  * - MathJax (script[type="math/tex"])
  */
 
-class LatexExtractor {
+class FormulaSourceParser {
     /**
-     * 从公式元素中提取 LaTeX 源码
-     * 按优先级尝试多种提取方式，自动适配不同平台
+     * 从公式元素中解析 LaTeX 源码
+     * 按优先级尝试多种方式，自动适配不同平台
      * 
      * @param {Element} formulaElement - 公式 DOM 元素
      * @returns {string|null} - LaTeX 源码，失败返回 null
      */
-    static extract(formulaElement) {
+    static parseLatex(formulaElement) {
         if (!formulaElement) {
             return null;
         }
@@ -70,7 +70,6 @@ class LatexExtractor {
         }
 
         // 方法8: 维基百科格式 - mwe-math-element 中的 annotation
-        // 查找 class 包含 mwe-math-element 的元素
         let mweElement = formulaElement;
         if (!formulaElement.classList.contains('mwe-math-element')) {
             mweElement = formulaElement.closest('.mwe-math-element');
@@ -84,12 +83,10 @@ class LatexExtractor {
         }
 
         // 方法9: MathJax 格式 - 从兄弟 script 提取
-        // 先查 MathJax 自己的下一个兄弟: <MathJax/><script>
         let nextSibling = formulaElement.nextElementSibling;
         if (nextSibling?.tagName === 'SCRIPT' && nextSibling.type?.startsWith('math/tex')) {
             return nextSibling.textContent.trim();
         }
-        // 再查父元素的下一个兄弟: <wrapper><MathJax/></wrapper><script>
         if (formulaElement.parentElement) {
             nextSibling = formulaElement.parentElement.nextElementSibling;
             if (nextSibling?.tagName === 'SCRIPT' && nextSibling.type?.startsWith('math/tex')) {
@@ -102,23 +99,22 @@ class LatexExtractor {
             return formulaElement.getAttribute('data-latex').trim();
         }
 
-        // 无法获取公式
         return null;
     }
 
     /**
-     * 从公式元素中提取 MathML
+     * 从公式元素中解析 MathML
      * temml 作为 content_script 直接加载，同步可用
      * 
      * @param {Element} formulaElement - 公式 DOM 元素
      * @returns {string|null} - MathML XML 字符串，失败返回 null
      */
-    static extractMathML(formulaElement) {
+    static parseMathML(formulaElement) {
         if (!formulaElement) return null;
 
         const latexSource = formulaElement.getAttribute('data-latex-source');
         if (latexSource) {
-            const generated = LatexExtractor.generateMathML(latexSource);
+            const generated = FormulaSourceParser.latexToMathML(latexSource);
             if (generated) return generated;
         }
 
@@ -126,11 +122,11 @@ class LatexExtractor {
     }
 
     /**
-     * 用 temml 将 LaTeX 转换为 MathML
+     * 将 LaTeX 转换为 MathML
      * @param {string} latex - LaTeX 源码
      * @returns {string|null}
      */
-    static generateMathML(latex) {
+    static latexToMathML(latex) {
         if (!latex) return null;
 
         try {
@@ -143,11 +139,11 @@ class LatexExtractor {
                     trust: false
                 });
 
-                const cleaned = LatexExtractor.cleanMathML(rawMathML);
-                return LatexExtractor.toWordMathML(cleaned);
+                const stripped = FormulaSourceParser.stripMathMLWrapper(rawMathML);
+                return FormulaSourceParser.prefixForWord(stripped);
             }
         } catch (e) {
-            console.warn('[LatexExtractor] temml conversion failed:', e);
+            console.warn('[FormulaSourceParser] temml conversion failed:', e);
         }
 
         return null;
@@ -155,53 +151,17 @@ class LatexExtractor {
 
     /**
      * 移除 MathML 中的 annotation 和 semantics 包装
+     * TODO: 后续重新实现
      */
-    static cleanMathML(mathml) {
-        return mathml
-            .replace(/<annotation(?:-xml)?[\s\S]*?<\/annotation(?:-xml)?>/g, '')
-            .replace(/<semantics>\s*([\s\S]*?)\s*<\/semantics>/g, '$1');
+    static stripMathMLWrapper(mathml) {
+        return mathml;
     }
 
     /**
-     * 转换为 Word 兼容的 MathML（添加 mml: 前缀）
+     * 转换为 Word 兼容的 MathML（添加命名空间前缀）
+     * TODO: 后续重新实现
      */
-    static toWordMathML(mathml) {
-        const MATHML_NS = 'http://www.w3.org/1998/Math/MathML';
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(
-            `<root xmlns:mml="${MATHML_NS}">${mathml}</root>`,
-            'application/xml'
-        );
-        const mathEl = doc.querySelector('math');
-        if (!mathEl) return mathml;
-
-        const SKIP_ATTRS = new Set(['xmlns', 'class', 'style']);
-
-        const serialize = (node) => {
-            if (node.nodeType === Node.TEXT_NODE) return node.textContent;
-            if (node.nodeType !== Node.ELEMENT_NODE) return '';
-
-            const tag = 'mml:' + node.localName;
-            let attrs = '';
-
-            if (node.localName === 'math') {
-                attrs += ` xmlns:mml="${MATHML_NS}" display="block"`;
-            }
-
-            for (const attr of node.attributes) {
-                if (SKIP_ATTRS.has(attr.name)) continue;
-                attrs += ` ${attr.name}="${attr.value}"`;
-            }
-
-            let children = '';
-            for (const child of node.childNodes) {
-                children += serialize(child);
-            }
-
-            return `<${tag}${attrs}>${children}</${tag}>`;
-        };
-
-        return serialize(mathEl);
+    static prefixForWord(mathml) {
+        return mathml;
     }
 }
-

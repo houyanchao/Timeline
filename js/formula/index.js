@@ -30,8 +30,8 @@
             return;
         }
         
-        if (typeof LatexExtractor === 'undefined') {
-            console.error('[Formula] LatexExtractor is not loaded');
+        if (typeof FormulaSourceParser === 'undefined') {
+            console.error('[Formula] FormulaSourceParser is not loaded');
             return;
         }
         
@@ -65,25 +65,24 @@
      * ✅ 监听功能开关变化，动态启用/禁用公式复制功能
      */
     function setupStorageListener() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
+        chrome.storage.onChanged.addListener(async (changes, areaName) => {
             if (areaName !== 'local') return;
             
-            if (changes.formulaEnabled) {
-                const isEnabled = changes.formulaEnabled.newValue !== false;
+            if (changes.formulaLatexEnabled || changes.formulaMathMLEnabled) {
+                const result = await chrome.storage.local.get(['formulaLatexEnabled', 'formulaMathMLEnabled']);
+                // MathML 暂时禁用，后续重新实现
+                // const isEnabled = (result.formulaLatexEnabled !== false || result.formulaMathMLEnabled === true);
+                const isEnabled = (result.formulaLatexEnabled !== false);
                 
                 if (isEnabled) {
-                    // 从禁用到启用
                     if (!globalFormulaManager) {
-                        // 如果没有实例，重新初始化
                         console.log('[Formula] Feature enabled, initializing...');
                         initFormulaModule();
                     } else {
-                        // 如果已有实例，强制重新扫描（处理关闭期间生成的新公式）
                         console.log('[Formula] Feature re-enabled, rescanning...');
                         globalFormulaManager.rescan();
                     }
                 } else {
-                    // 从启用到禁用：销毁
                     if (globalFormulaManager) {
                         console.log('[Formula] Feature disabled, destroying...');
                         destroyFormulaModule();
