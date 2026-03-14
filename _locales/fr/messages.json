@@ -430,11 +430,5 @@
   },
   "aboutShareContent": {
     "message": "Si cette extension vous a aidé, n'hésitez pas à le partager sur X, Reddit, YouTube, etc., et avec vos amis, camarades ou collègues. Je maintiens ce plugin seul avec des ressources limitées et ne peux pas consacrer de temps au marketing — ce que je peux faire, c'est de le rendre de mieux en mieux. Merci beaucoup. ❤️"
-  },
-  "aboutXhsTip": {
-    "message": "Si vous avez publié un article ou une vidéo de recommandation de qualité sur Xiaohongshu, je peux vous aider à le promouvoir (à partir de 75 ¥). 👇"
-  },
-  "aboutXhsBtn": {
-    "message": "Soumettre le lien Xiaohongshu"
   }
 }

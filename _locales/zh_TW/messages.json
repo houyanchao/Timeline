@@ -463,11 +463,5 @@
   },
   "formulaMathMLHint": {
     "message": "點擊公式複製為 MathML 格式，可直接貼到 Word"
-  },
-  "aboutXhsTip": {
-    "message": "如果你在小紅書發布了推薦文章或影片，且內容優質，我可以幫你投流推廣（75元起）。👇"
-  },
-  "aboutXhsBtn": {
-    "message": "登記小紅書連結"
   }
 }

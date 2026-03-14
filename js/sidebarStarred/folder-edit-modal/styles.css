@@ -1,0 +1,370 @@
+/**
+ * Folder Edit Modal Styles
+ *
+ * 文件夹创建/编辑统一弹窗样式
+ * 对应 JS: ./index.js
+ *
+ * @requires ../../../styles/variables.css
+ */
+
+/* ============================================
+   Overlay
+   ============================================ */
+
+.folder-edit-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2147483648;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.folder-edit-modal-overlay.visible {
+    opacity: 1;
+}
+
+/* ============================================
+   Dialog
+   ============================================ */
+
+.folder-edit-modal {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    animation: folderEditModalSlideIn 0.3s ease;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal {
+    background: #2a2a2a;
+}
+
+@keyframes folderEditModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================
+   Header
+   ============================================ */
+
+.folder-edit-modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-header {
+    border-bottom-color: #404040;
+}
+
+.folder-edit-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-header h3 {
+    color: #f3f4f6;
+}
+
+/* ============================================
+   Body
+   ============================================ */
+
+.folder-edit-modal-body {
+    padding: 20px 24px;
+}
+
+/* ============================================
+   Input Row (icon button + text input)
+   ============================================ */
+
+.folder-edit-modal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Icon button (triggers tooltip picker) */
+.folder-edit-modal-icon-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: border-color 0.2s, background-color 0.2s;
+    padding: 0;
+}
+
+.folder-edit-modal-icon-btn:hover {
+    border-color: #9ca3af;
+    background-color: #f9fafb;
+}
+
+.folder-edit-modal-icon-btn:active {
+    transform: scale(0.95);
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-icon-btn {
+    background: #1a1a1a;
+    border-color: #404040;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-icon-btn:hover {
+    border-color: #6b7280;
+    background-color: #252525;
+}
+
+
+/* ============================================
+   Icon Picker (rendered inside GlobalTooltipManager)
+   ============================================ */
+
+/* Override tooltip constraints when showing the icon picker */
+.timeline-tooltip:has(.folder-icon-picker) {
+    max-width: none;
+    display: block;
+}
+
+.folder-icon-picker {
+    width: 284px;
+}
+
+/* Category tabs */
+.folder-icon-picker-tabs {
+    display: flex;
+    gap: 2px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.folder-icon-picker-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.folder-icon-picker-tab {
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 0.15s, background-color 0.15s;
+}
+
+.folder-icon-picker-tab:hover {
+    opacity: 0.85;
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.folder-icon-picker-tab.active {
+    opacity: 1;
+    background-color: rgba(128, 128, 128, 0.15);
+}
+
+/* Icon grid: 8 columns, equal spacing */
+.folder-edit-modal-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+}
+
+/* Icon item: fills grid cell evenly */
+.folder-edit-modal-icon-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    user-select: none;
+    border: 2px solid transparent;
+}
+
+.folder-edit-modal-icon-item:hover {
+    background-color: rgba(128, 128, 128, 0.15);
+}
+
+.folder-edit-modal-icon-item.selected {
+    background-color: rgba(128, 128, 128, 0.2);
+    border-color: currentColor;
+}
+
+
+/* Text input */
+.folder-edit-modal-input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2937;
+    background: #ffffff;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-input {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #f3f4f6;
+}
+
+.folder-edit-modal-input:hover {
+    border-color: #9ca3af;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-input:hover {
+    border-color: #6b7280;
+}
+
+.folder-edit-modal-input:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-input:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.folder-edit-modal-input::placeholder {
+    color: #9ca3af;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-input::placeholder {
+    color: #6b7280;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+.folder-edit-modal-footer {
+    padding: 16px 24px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-footer {
+    border-top-color: #404040;
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.folder-edit-modal-cancel,
+.folder-edit-modal-confirm {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.folder-edit-modal-cancel {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-cancel {
+    background: #404040;
+    color: #d1d5db;
+}
+
+.folder-edit-modal-cancel:hover {
+    background: #e5e7eb;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-cancel:hover {
+    background: #4b5563;
+}
+
+.folder-edit-modal-confirm {
+    background: #000000;
+    color: #ffffff;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-confirm {
+    background: #ffffff;
+    color: #000000;
+}
+
+.folder-edit-modal-confirm:hover {
+    background: #1f1f1f;
+}
+
+html[data-timeline-theme="dark"] .folder-edit-modal-confirm:hover {
+    background: #e5e7eb;
+}
+
+.folder-edit-modal-confirm:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 480px) {
+    .folder-edit-modal {
+        width: 95%;
+        max-width: none;
+    }
+
+    .folder-edit-modal-header,
+    .folder-edit-modal-body,
+    .folder-edit-modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .folder-icon-picker {
+        width: 240px;
+    }
+
+    .folder-edit-modal-icon-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}

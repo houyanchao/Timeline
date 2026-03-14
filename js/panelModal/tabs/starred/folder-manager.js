@@ -26,9 +26,10 @@ class FolderManager {
      * 创建文件夹
      * @param {string} name - 文件夹名称
      * @param {string|null} parentId - 父文件夹 ID（null = 根文件夹）
+     * @param {string} icon - emoji 图标
      * @returns {Promise<Object>} 新创建的文件夹
      */
-    async createFolder(name, parentId = null) {
+    async createFolder(name, parentId = null, icon = '') {
         // 检查嵌套层级（最多2级）
         if (parentId) {
             const folders = await this.getFolders();
@@ -47,6 +48,7 @@ class FolderManager {
         const newFolder = {
             id: `folder_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             name,
+            icon,
             parentId,
             createdAt: Date.now(),
             order: siblings.length
@@ -60,11 +62,12 @@ class FolderManager {
     }
     
     /**
-     * 编辑文件夹名称
+     * 编辑文件夹
      * @param {string} folderId - 文件夹 ID
      * @param {string} newName - 新名称
+     * @param {string} [newIcon] - 新 emoji 图标（可选）
      */
-    async updateFolder(folderId, newName) {
+    async updateFolder(folderId, newName, newIcon) {
         const folders = await this.getFolders();
         const folder = folders.find(f => f.id === folderId);
         
@@ -73,9 +76,10 @@ class FolderManager {
         }
         
         folder.name = newName;
+        if (newIcon !== undefined) folder.icon = newIcon;
         await this.storage.set('folders', folders);
         
-        console.log('[FolderManager] Updated folder:', folderId, newName);
+        console.log('[FolderManager] Updated folder:', folderId, newName, newIcon);
     }
     
     /**

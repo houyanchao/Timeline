@@ -20,6 +20,13 @@ class StarredTab extends BaseTab {
             light: { backgroundColor: '#0d0d0d', textColor: '#ffffff', borderColor: '#262626' },
             dark: { backgroundColor: '#ffffff', textColor: '#1f2937', borderColor: '#d1d5db' }
         };
+
+        // 平台感知的文件夹 SVG
+        const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform) || (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
+        const gTop = isMac ? '#6CC4F8' : '#FFD666';
+        const gBot = isMac ? '#3B9FE7' : '#E5A520';
+        this._folderSvgClosed = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none"><defs><linearGradient id="st-fc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${gTop}"/><stop offset="100%" stop-color="${gBot}"/></linearGradient></defs><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="url(#st-fc)"/></svg>`;
+        this._folderSvgOpen = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none"><defs><linearGradient id="st-fo" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${gTop}"/><stop offset="100%" stop-color="${gBot}"/></linearGradient></defs><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="url(#st-fo)" stroke-width="2" fill="none"/></svg>`;
     }
     
     /**
@@ -259,21 +266,18 @@ class StarredTab extends BaseTab {
         const folderInfo = document.createElement('div');
         folderInfo.className = 'ait-folder-info';
         
-        // 根据展开状态选择不同的图标（对比度强的设计）
-        const folderIconSvg = isExpanded 
-            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>`  // 展开状态 - 空心轮廓文件夹（对比强烈）
-            : `<svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-            </svg>`;  // 关闭状态 - 实心文件夹
+        let folderIconHtml;
+        if (folder.icon) {
+            folderIconHtml = this.escapeHtml(folder.icon);
+        } else {
+            folderIconHtml = isExpanded ? this._folderSvgOpen : this._folderSvgClosed;
+        }
         
-        // 递归统计所有收藏项
         const totalItems = this._countAllItems(folder);
         
         folderInfo.innerHTML = `
             <span class="ait-folder-icon">
-                ${folderIconSvg}
+                ${folderIconHtml}
             </span>
             <span class="ait-folder-name">${this.escapeHtml(folder.name)}</span>
             <span class="ait-folder-count">(${totalItems})</span>
@@ -441,18 +445,9 @@ class StarredTab extends BaseTab {
         const folderInfo = document.createElement('div');
         folderInfo.className = 'ait-folder-info';
         
-        // 根据展开状态选择不同的图标
-        const folderIconSvg = isExpanded 
-            ? `<svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/>
-            </svg>`  // 打开的文件夹
-            : `<svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-            </svg>`;  // 关闭的文件夹
-        
         folderInfo.innerHTML = `
             <span class="ait-folder-icon">
-                ${folderIconSvg}
+                ${isExpanded ? this._folderSvgOpen : this._folderSvgClosed}
             </span>
             <span class="ait-folder-name">${chrome.i18n.getMessage('pkxvmz')}</span>
             <span class="ait-folder-count">(${filteredItems.length})</span>
@@ -784,17 +779,8 @@ class StarredTab extends BaseTab {
                     content.classList.remove('expanded');
                 }
                 
-                // 更新文件夹图标
-                if (folderIcon) {
-                    const folderIconSvg = isExpanded
-                        ? `<svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/>
-                        </svg>`  // 打开的文件夹
-                        : `<svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-                        </svg>`;  // 关闭的文件夹
-                    
-                    folderIcon.innerHTML = folderIconSvg;
+                if (folderIcon && !folderIcon.textContent.trim()) {
+                    folderIcon.innerHTML = isExpanded ? this._folderSvgOpen : this._folderSvgClosed;
                 }
             }
         }
@@ -805,32 +791,30 @@ class StarredTab extends BaseTab {
      */
     async handleCreateFolder(parentId = null) {
         try {
+            if (!window.folderEditModal) return;
+
             const parentPath = parentId ? await this.folderManager.getFolderPath(parentId) : '';
             const title = parentId 
                 ? chrome.i18n.getMessage('xmkvpz').replace('{folderName}', parentPath)
                 : chrome.i18n.getMessage('kxvpmz');
-            
-            const name = await window.globalInputModal.show({
+
+            const result = await window.folderEditModal.show({
+                mode: 'create',
                 title: title,
-                defaultValue: '',
                 placeholder: chrome.i18n.getMessage('vzkpmx'),
-                required: true,
                 requiredMessage: chrome.i18n.getMessage('kmxpvz'),
                 maxLength: 10
             });
-            
-            if (!name || !name.trim()) {
-                return;
-            }
-            
-            // 检查名称是否已存在
-            const exists = await this.folderManager.isFolderNameExists(name.trim(), parentId);
+
+            if (!result) return;
+
+            const exists = await this.folderManager.isFolderNameExists(result.name, parentId);
             if (exists) {
                 window.globalToastManager.error(chrome.i18n.getMessage('kpvzmx'), null, { color: this.toastColor });
                 return;
             }
-            
-            await this.folderManager.createFolder(name.trim(), parentId);
+
+            await this.folderManager.createFolder(result.name, parentId, result.icon);
             window.globalToastManager.success(chrome.i18n.getMessage('xzvkpm'), null, { color: this.toastColor });
             await this.updateList();
         } catch (error) {
@@ -846,33 +830,40 @@ class StarredTab extends BaseTab {
      */
     async handleEditFolder(folderId, currentName) {
         try {
-            const newName = await window.globalInputModal.show({
-                title: chrome.i18n.getMessage('pxmzvk'),
-                defaultValue: currentName,
-                placeholder: chrome.i18n.getMessage('mvzxkp'),
-                required: true,
-                requiredMessage: '文件夹名称不能为空',
-                maxLength: 10
-            });
-            
-            if (!newName || !newName.trim() || newName.trim() === currentName) {
-                return;
-            }
-            
-            // 获取父ID以检查同级名称
+            if (!window.folderEditModal) return;
+
             const folders = await this.folderManager.getFolders();
             const folder = folders.find(f => f.id === folderId);
-            const parentId = folder ? folder.parentId : null;
-            
-            // 检查名称是否已存在
-            const exists = await this.folderManager.isFolderNameExists(newName.trim(), parentId, folderId);
-            if (exists) {
-                window.globalToastManager.error('文件夹名称已存在');
-                return;
+            if (!folder) return;
+
+            const parentId = folder.parentId || null;
+
+            const result = await window.folderEditModal.show({
+                mode: 'edit',
+                title: chrome.i18n.getMessage('pxmzvk'),
+                name: currentName,
+                icon: folder.icon || '',
+                placeholder: chrome.i18n.getMessage('mvzxkp'),
+                maxLength: 10
+            });
+
+            if (!result) return;
+
+            const nameChanged = result.name !== currentName;
+            const iconChanged = result.icon !== (folder.icon || '');
+
+            if (!nameChanged && !iconChanged) return;
+
+            if (nameChanged) {
+                const exists = await this.folderManager.isFolderNameExists(result.name, parentId, folderId);
+                if (exists) {
+                    window.globalToastManager.error(chrome.i18n.getMessage('kpvzmx'), null, { color: this.toastColor });
+                    return;
+                }
             }
-            
-            await this.folderManager.updateFolder(folderId, newName.trim());
-            window.globalToastManager.success(chrome.i18n.getMessage('folderUpdated'));
+
+            await this.folderManager.updateFolder(folderId, result.name, result.icon);
+            window.globalToastManager.success(chrome.i18n.getMessage('folderUpdated'), null, { color: this.toastColor });
             await this.updateList();
         } catch (error) {
             console.error('[StarredTab] Edit folder failed:', error);

@@ -106,13 +106,6 @@ class AboutTab extends BaseTab {
                     <div class="about-section-title">${chrome.i18n.getMessage('aboutShareTitle') || '想请你帮个忙'}</div>
                     <div class="about-section-content">
                         ${chrome.i18n.getMessage('aboutShareContent') || '如果这个插件帮到了你，欢迎分享到 小红书、X、Reddit、YouTube 等等，也欢迎分享给朋友、同学、同事，让更多人使用到它。我是一个人维护这个插件，精力有限，无法抽身去做用户增长运营，我能做到的是让这个插件越来越好用，非常感谢。❤️'}
-                        <div class="about-xhs-collect">
-                            <div class="about-xhs-collect-tip">${chrome.i18n.getMessage('aboutXhsTip') || '如果你在小红书发布了推荐文章或视频，且内容优质，我可以帮你投流推广（75元起）。👇'}</div>
-                            <a href="https://my.feishu.cn/share/base/form/shrcnm9dxA0OZVK96buotGs1the" target="_blank" class="about-xhs-btn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                ${chrome.i18n.getMessage('aboutXhsBtn') || '登记小红书链接'}
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>

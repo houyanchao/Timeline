@@ -175,12 +175,18 @@
 }
 
 
-/* 操作按钮容器 - 收藏icon和前往按钮的容器 */
+/* 操作按钮容器 - hover 时显示 */
 .timeline-starred-item-actions {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 6px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.timeline-starred-item:hover .timeline-starred-item-actions {
+    opacity: 1;
 }
 
 /* 编辑按钮 - 与星标按钮尺寸一致 */
@@ -423,6 +429,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.ait-folder-header:hover .ait-folder-actions {
+    opacity: 1;
 }
 
 .ait-folder-action-btn {

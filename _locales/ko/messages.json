@@ -457,11 +457,5 @@
   },
   "aboutShareContent": {
     "message": "이 플러그인이 도움이 되었다면, X, Reddit, YouTube 등에서 공유해 주시고, 친구나 동료에게도 공유해 주세요. 혼자서 유지보수하는 플러그인이라 마케팅에 시간을 할애할 수 없지만, 플러그인을 점점 더 좋게 만들겠습니다. 감사합니다. ❤️"
-  },
-  "aboutXhsTip": {
-    "message": "Xiaohongshu에 양질의 추천 글이나 영상을 게시했다면, 유료 홍보(75위안부터)를 도와드릴 수 있습니다. 👇"
-  },
-  "aboutXhsBtn": {
-    "message": "Xiaohongshu 링크 등록"
   }
 }
