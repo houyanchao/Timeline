@@ -9,7 +9,7 @@
     <a href="https://microsoftedge.microsoft.com/addons/detail/ai-timeline%EF%BC%9A%E5%8A%A9%E4%BD%A0%E4%BD%BF%E7%94%A8-ai-%E6%95%88%E7%8E%87%E7%BF%BB%E5%80%8D-/ekednjjojnhlajfobalaaihkibbdcbab">
       <img src="https://img.shields.io/badge/Edge-安装扩展-0078D7?style=flat-square&logo=microsoftedge&logoColor=white" alt="Edge Add-ons">
     </a>
-    <img src="https://img.shields.io/badge/用户-10000+-brightgreen?style=flat-square" alt="Users">
+    <img src="https://img.shields.io/badge/用户-20000+-brightgreen?style=flat-square" alt="Users">
     <img src="https://img.shields.io/badge/版本-4.1.6-blue?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/许可证-MIT-green?style=flat-square" alt="License">
   </p>
