@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: AI 대화 향상 플러그인"
+    "message": "Timeline: AI 대화 향상 플러그인"
   },
   "extDescription": {
     "message": "AI 대화 경험을 두 배로. 대화 타임라인, 폴더, LaTeX 수식 복사, 빠른 메모, 맞춤 프롬프트 등 다양한 생산성 기능."
@@ -522,7 +522,7 @@
     "message": "친구에게 추천"
   },
   "aboutShareContent": {
-    "message": "이 플러그인이 도움이 되었다면, Bilibili, X, Reddit, YouTube 등에서 공유해 주시고, 친구나 동료에게도 공유해 주세요. ❤️"
+    "message": "이 플러그인이 도움이 되었다면, 샤오홍슈, Bilibili, X, Reddit, YouTube 등 플랫폼에서 리뷰를 작성해 주시고, 동기나 친구에게도 공유해 주세요. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "폴더에 즐겨찾기"

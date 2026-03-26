@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: AI Chat Enhancement Plugin"
+    "message": "Timeline: AI Chat Enhancement Plugin"
   },
   "extDescription": {
     "message": "Double your AI chat experience. Chat timeline, folders, copy LaTeX formulas, quick notes, custom prompt library, and many more productivity features."
@@ -495,7 +495,7 @@
     "message": "Recommend to Friends"
   },
   "aboutShareContent": {
-    "message": "If this extension has been helpful, feel free to share it on Bilibili, X, Reddit, YouTube, etc., and with friends, classmates, or colleagues so more people can discover it. ❤️"
+    "message": "If this extension has been helpful, feel free to post a review on Xiaohongshu, Bilibili, X, Reddit, YouTube, or other platforms, and share it with classmates and friends so more people can discover it. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

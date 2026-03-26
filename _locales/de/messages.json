@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: KI-Chat-Erweiterung"
+    "message": "Timeline: KI-Chat-Erweiterung"
   },
   "extDescription": {
     "message": "Verdoppeln Sie Ihr AI-Chat-Erlebnis. Chat-Timeline, Ordner, LaTeX-Formeln kopieren, Schnellnotizen, Prompt-Bibliothek und mehr."
@@ -495,7 +495,7 @@
     "message": "Freunden empfehlen"
   },
   "aboutShareContent": {
-    "message": "Wenn Ihnen diese Erweiterung geholfen hat, teilen Sie es gerne auf Bilibili, X, Reddit, YouTube usw. und mit Freunden, Kommilitonen oder Kollegen teilen. ❤️"
+    "message": "Wenn Ihnen diese Erweiterung geholfen hat, schreiben Sie gerne eine Bewertung auf Xiaohongshu, Bilibili, X, Reddit, YouTube oder anderen Plattformen, und teilen Sie sie mit Kommilitonen und Freunden. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

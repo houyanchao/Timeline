@@ -84,7 +84,7 @@ class PanelModal {
         // 标题（关闭按钮右侧）
         const sidebarTitle = document.createElement('span');
         sidebarTitle.className = 'ait-panel-modal-sidebar-title';
-        sidebarTitle.textContent = 'AI Timeline';
+        sidebarTitle.textContent = 'Timeline';
         
         sidebarHeader.appendChild(this.closeBtn);
         sidebarHeader.appendChild(sidebarTitle);

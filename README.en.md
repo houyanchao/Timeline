@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="./icons/icon128.png" alt="AI Timeline Logo" width="80" height="80">
-  <h1>AI Timeline</h1>
+  <img src="./icons/icon128.png" alt="Timeline Logo" width="80" height="80">
+  <h1>Timeline</h1>
   <p><strong>Browser-based AI chat enhancement extension</strong><br>Supports GPT, Gemini, DeepSeek, Kimi, Qwen, Claude, Yuanbao, NotebookLM and all major AI platforms</p>
 
   <p>
@@ -16,7 +16,7 @@
 
   <h4><a href="./README.md">简体中文</a> | <strong>English</strong></h4>
 
-  <img src="./READMEIMAGE/index.png" alt="AI Timeline Demo" width="800">
+  <img src="./READMEIMAGE/index.png" alt="Timeline Demo" width="800">
 </div>
 
 <br>

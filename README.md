@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="./icons/icon128.png" alt="AI Timeline Logo" width="80" height="80">
-  <h1>AI Timeline</h1>
+  <img src="./icons/icon128.png" alt="Timeline Logo" width="80" height="80">
+  <h1>Timeline</h1>
   <p><strong>浏览器端 AI 对话增强插件</strong><br>支持 GPT、Gemini、DeepSeek、Kimi、千问、Claude、元宝、NotebookLM 等所有主流 AI 平台</p>
 
   <p>
@@ -16,7 +16,7 @@
 
   <h4><strong>简体中文</strong> | <a href="./README.en.md">English</a></h4>
 
-  <img src="./READMEIMAGE/index.png" alt="AI Timeline 效果展示" width="800">
+  <img src="./READMEIMAGE/index.png" alt="Timeline 效果展示" width="800">
 </div>
 
 <br>

@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: Wtyczka do czatu AI"
+    "message": "Timeline: Wtyczka do czatu AI"
   },
   "extDescription": {
     "message": "Podwój swoje doświadczenie czatu z AI. Oś czasu czatu, foldery, kopiowanie formuł LaTeX, szybkie notatki, biblioteka promptów i wiele więcej."
@@ -495,7 +495,7 @@
     "message": "Poleć znajomym"
   },
   "aboutShareContent": {
-    "message": "Jeśli to rozszerzenie Ci pomogło, zachęcam do udostępnienia go na Bilibili, X, Reddit, YouTube itp., a także znajomym, kolegom z klasy lub współpracownikom. ❤️"
+    "message": "Jeśli to rozszerzenie Ci pomogło, zachęcam do napisania recenzji na Xiaohongshu, Bilibili, X, Reddit, YouTube lub innych platformach, a także do udostępnienia go kolegom z klasy i znajomym. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

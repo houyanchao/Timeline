@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: Plugin Peningkatan Obrolan AI"
+    "message": "Timeline: Plugin Peningkatan Obrolan AI"
   },
   "extDescription": {
     "message": "Gandakan pengalaman chat AI Anda. Timeline obrolan, folder, salin rumus LaTeX, catatan cepat, pustaka prompt, dan banyak fitur produktivitas lainnya."
@@ -495,7 +495,7 @@
     "message": "Rekomendasikan ke teman"
   },
   "aboutShareContent": {
-    "message": "Jika ekstensi ini membantu, silakan bagikan di Bilibili, X, Reddit, YouTube, dll., dan ke teman, teman sekelas, atau rekan kerja. ❤️"
+    "message": "Jika ekstensi ini membantu, silakan tulis ulasan di Xiaohongshu, Bilibili, X, Reddit, YouTube, atau platform lainnya, dan bagikan ke teman sekelas dan teman. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

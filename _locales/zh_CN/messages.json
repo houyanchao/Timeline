@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline：AI 对话增强插件"
+    "message": "Timeline：AI 对话增强插件"
   },
   "extDescription": {
     "message": "让 AI 对话体验翻倍。对话时间轴、文件夹、复制 LaTeX 公式、闪记、自定义提示词库等超多提效功能。"
@@ -576,7 +576,7 @@
     "message": "推荐给朋友"
   },
   "aboutShareContent": {
-    "message": "如果这个插件帮到了你，欢迎分享到 小红书、B站、X、Reddit、YouTube 等等，也欢迎分享给朋友、同学、同事，让更多人使用到它。❤️"
+    "message": "如果这个插件帮到了你，欢迎在 小红书、B站、X、Reddit、YouTube 等平台发测评，也欢迎分享给同学、朋友，让更多人使用到它。❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "收藏到文件夹"

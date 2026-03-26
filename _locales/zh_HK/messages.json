@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline：AI 對話增強插件"
+    "message": "Timeline：AI 對話增強插件"
   },
   "extDescription": {
     "message": "讓 AI 對話體驗翻倍。對話時間軸、資料夾、複製 LaTeX 公式、閃記、自定義提示詞庫等超多提效功能。"
@@ -480,7 +480,7 @@
     "message": "推薦給朋友"
   },
   "aboutShareContent": {
-    "message": "如果這個插件幫到了你，歡迎分享到 小紅書、B站、X、Reddit、YouTube 等等，也歡迎分享給朋友、同學、同事，讓更多人使用到它。❤️"
+    "message": "如果這個插件幫到了你，歡迎在 小紅書、B站、X、Reddit、YouTube 等平台發測評，也歡迎分享給同學、朋友，讓更多人使用到它。❤️"
   },
   "formulaCopyGeneric": {
     "message": "複製公式"

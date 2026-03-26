@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: ปลั๊กอินเสริมแชท AI"
+    "message": "Timeline: ปลั๊กอินเสริมแชท AI"
   },
   "extDescription": {
     "message": "เพิ่มประสบการณ์แชท AI เป็นสองเท่า ไทม์ไลน์แชท, โฟลเดอร์, คัดลอกสูตร LaTeX, บันทึกด่วน, คลังพรอมต์ และฟีเจอร์อีกมากมาย"
@@ -495,7 +495,7 @@
     "message": "แนะนำให้เพื่อน"
   },
   "aboutShareContent": {
-    "message": "หากส่วนขยายนี้ช่วยคุณได้ ยินดีหากแบ่งปันบน Bilibili, X, Reddit, YouTube ฯลฯ และแบ่งปันให้เพื่อน เพื่อนร่วมชั้น หรือเพื่อนร่วมงาน ❤️"
+    "message": "หากส่วนขยายนี้ช่วยคุณได้ ยินดีหากเขียนรีวิวบน Xiaohongshu, Bilibili, X, Reddit, YouTube หรือแพลตฟอร์มอื่น ๆ และแบ่งปันให้เพื่อนร่วมชั้นและเพื่อน ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

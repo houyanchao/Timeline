@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline：AI チャット強化プラグイン"
+    "message": "Timeline：AI チャット強化プラグイン"
   },
   "extDescription": {
     "message": "AI チャット体験を倍増。チャットタイムライン、フォルダ、LaTeX 数式コピー、クイックメモ、カスタムプロンプトなど多数の効率化機能。"
@@ -522,7 +522,7 @@
     "message": "友達にすすめる"
   },
   "aboutShareContent": {
-    "message": "このプラグインが役に立ったら、Bilibili、X、Reddit、YouTube などでシェアしていただけると嬉しいです。友人や同僚への共有も大歓迎です。❤️"
+    "message": "このプラグインが役に立ったら、小紅書、Bilibili、X、Reddit、YouTube などのプラットフォームでレビューを投稿していただけると嬉しいです。クラスメートや友人への共有も大歓迎です。❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "フォルダにスター"

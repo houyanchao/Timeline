@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: Extensão de chat IA"
+    "message": "Timeline: Extensão de chat IA"
   },
   "extDescription": {
     "message": "Duplique a sua experiência de chat com IA. Timeline de chat, pastas, copiar fórmulas LaTeX, notas rápidas, biblioteca de prompts e mais."
@@ -495,7 +495,7 @@
     "message": "Recomendar a amigos"
   },
   "aboutShareContent": {
-    "message": "Se esta extensão o ajudou, sinta-se à vontade para partilhá-la no Bilibili, X, Reddit, YouTube, etc., e com amigos, colegas de turma ou de trabalho. ❤️"
+    "message": "Se esta extensão o ajudou, sinta-se à vontade para publicar uma avaliação no Xiaohongshu, Bilibili, X, Reddit, YouTube ou outras plataformas, e partilhá-la com colegas de turma e amigos. ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"

@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "AI Timeline: AI चैट संवर्धन प्लगइन"
+    "message": "Timeline: AI चैट संवर्धन प्लगइन"
   },
   "extDescription": {
     "message": "AI चैट अनुभव को दोगुना करें। चैट टाइमलाइन, फ़ोल्डर, LaTeX सूत्र कॉपी, त्वरित नोट्स, कस्टम प्रॉम्प्ट और कई उत्पादकता सुविधाएं।"
@@ -495,7 +495,7 @@
     "message": "दोस्तों को सुझाएं"
   },
   "aboutShareContent": {
-    "message": "अगर यह एक्सटेंशन आपके काम आया, तो Bilibili, X, Reddit, YouTube आदि पर शेयर करें, और दोस्तों, सहपाठियों या सहकर्मियों के साथ शेयर करें। ❤️"
+    "message": "अगर यह एक्सटेंशन आपके काम आया, तो Xiaohongshu, Bilibili, X, Reddit, YouTube या अन्य प्लेटफ़ॉर्म पर रिव्यू लिखें, और सहपाठियों और दोस्तों के साथ शेयर करें। ❤️"
   },
   "nativeMenuStarToFolder": {
     "message": "Star to Folder"
