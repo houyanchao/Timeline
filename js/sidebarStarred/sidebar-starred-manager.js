@@ -114,10 +114,11 @@ class SidebarStarredManager {
         const headerActions = document.createElement('div');
         headerActions.className = 'ait-ss-header-actions';
 
-        const searchBtn = document.createElement('button');
-        searchBtn.className = 'ait-ss-add-btn';
-        searchBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
-        searchBtn.addEventListener('click', (e) => {
+        this.searchBtn = document.createElement('button');
+        this.searchBtn.className = 'ait-ss-add-btn';
+        this.searchBtn.style.display = 'none';
+        this.searchBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+        this.searchBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (window.panelModal) window.panelModal.show('starred');
         });
@@ -127,7 +128,7 @@ class SidebarStarredManager {
         addBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>';
         addBtn.addEventListener('click', (e) => { e.stopPropagation(); this.treeRenderer.handleCreateFolder(); });
 
-        headerActions.appendChild(searchBtn);
+        headerActions.appendChild(this.searchBtn);
         headerActions.appendChild(addBtn);
 
         header.appendChild(titleArea);
@@ -165,6 +166,11 @@ class SidebarStarredManager {
         if (this.isDestroyed || !this.container) return;
         const tree = await this.folderManager.getStarredByFolder();
         this.treeRenderer.renderTree(tree);
+        
+        const hasContent = tree.folders.length > 0 || tree.uncategorized.length > 0;
+        if (this.searchBtn) {
+            this.searchBtn.style.display = hasContent ? '' : 'none';
+        }
     }
 
     // ==================== 监听 ====================

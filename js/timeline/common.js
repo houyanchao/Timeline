@@ -200,9 +200,6 @@ const StorageAdapter = {
         // 检查 chrome.storage 是否可用
         if (!this.isChromeStorageAvailable()) return;
         
-        // ✅ 先执行 local key 迁移（每次加载都执行）
-        await this.migrateLocalKeys();
-        
         try {
             // 检查 sync 是否可用（用于读取旧数据）
             if (!chrome.storage.sync) return;
@@ -266,40 +263,6 @@ const StorageAdapter = {
             });
         } catch (e) {
             console.error('[StorageAdapter] Migration failed:', e);
-        }
-    },
-    
-    /**
-     * 迁移 local storage 中的旧 key 名称
-     * 每次插件加载时执行，已迁移的会自动跳过
-     * 
-     * 迁移规则：
-     * - biwhckdj → prompts（提示词）
-     */
-    async migrateLocalKeys() {
-        try {
-            if (!this.isChromeStorageAvailable()) return;
-            
-            const result = await new Promise(resolve => {
-                chrome.storage.local.get(['biwhckdj', 'prompts'], resolve);
-            });
-            
-            // biwhckdj → prompts
-            if (result.biwhckdj && !result.prompts) {
-                await new Promise(resolve => {
-                    chrome.storage.local.set({ prompts: result.biwhckdj }, resolve);
-                });
-                await new Promise(resolve => {
-                    chrome.storage.local.remove('biwhckdj', resolve);
-                });
-            } else if (result.biwhckdj && result.prompts) {
-                // 两个都存在，删除旧的
-                await new Promise(resolve => {
-                    chrome.storage.local.remove('biwhckdj', resolve);
-                });
-            }
-        } catch (e) {
-            console.error('[StorageAdapter] Local key migration failed:', e);
         }
     },
 

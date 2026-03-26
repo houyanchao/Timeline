@@ -99,7 +99,6 @@ class PromptTab extends BaseTab {
     
     /**
      * 加载提示词列表
-     * 注：key 迁移逻辑已移至 StorageAdapter.migrateLocalKeys()
      */
     async loadPrompts() {
         try {
@@ -120,6 +119,18 @@ class PromptTab extends BaseTab {
             await chrome.storage.local.set({ prompts: prompts });
         } catch (e) {
             console.error('[PromptTab] Failed to save prompts:', e);
+        }
+    }
+    
+    /**
+     * 从 storage 中获取最新的提示词列表（防止内存状态过期导致数据丢失）
+     */
+    async _getFreshPrompts() {
+        try {
+            const result = await chrome.storage.local.get('prompts');
+            return result.prompts || [];
+        } catch (e) {
+            return this.getState('prompts') || [];
         }
     }
     
@@ -312,7 +323,7 @@ class PromptTab extends BaseTab {
      * 切换置顶状态
      */
     async togglePin(id) {
-        const prompts = this.getState('prompts') || [];
+        const prompts = await this._getFreshPrompts();
         const index = prompts.findIndex(p => p.id === id);
         
         if (index !== -1) {
@@ -339,7 +350,7 @@ class PromptTab extends BaseTab {
      * @param {string} direction - 移动方向：'up' 或 'down'
      */
     async movePrompt(id, direction) {
-        const prompts = this.getState('prompts') || [];
+        const prompts = await this._getFreshPrompts();
         const index = prompts.findIndex(p => p.id === id);
         
         if (index === -1) return;
@@ -417,7 +428,7 @@ class PromptTab extends BaseTab {
                     <label>${chrome.i18n.getMessage('promptContent')}<span class="required-mark">*</span></label>
                     <textarea class="prompt-modal-textarea" id="prompt-content-input"
                         placeholder="${chrome.i18n.getMessage('uwkjwjw')}"
-                        rows="4" maxlength="5000">${this._escapeHtml(prompt?.content || '')}</textarea>
+                        rows="4" maxlength="10000">${this._escapeHtml(prompt?.content || '')}</textarea>
                     <div class="prompt-char-counter">
                         <div class="prompt-platform-select" id="prompt-platform-select">
                             <span class="prompt-platform-label">${chrome.i18n.getMessage('ptfmsl')}：</span>
@@ -426,7 +437,7 @@ class PromptTab extends BaseTab {
                                 <polyline points="6 9 12 15 18 9"/>
                             </svg>
                         </div>
-                        <span><span id="prompt-char-count">${prompt?.content?.length || 0}</span>/5000</span>
+                        <span><span id="prompt-char-count">${prompt?.content?.length || 0}</span>/10000</span>
                     </div>
                 </div>
             </div>
@@ -547,7 +558,7 @@ class PromptTab extends BaseTab {
      * 添加提示词
      */
     async byaskjndg(values) {
-        const prompts = this.getState('prompts') || [];
+        const prompts = await this._getFreshPrompts();
         const newPrompt = {
             id: Date.now().toString(),
             name: values.name?.trim() || '',
@@ -583,7 +594,7 @@ class PromptTab extends BaseTab {
      * 更新提示词
      */
     async updatePrompt(id, values) {
-        const prompts = this.getState('prompts') || [];
+        const prompts = await this._getFreshPrompts();
         const index = prompts.findIndex(p => p.id === id);
         
         if (index !== -1) {
@@ -610,7 +621,7 @@ class PromptTab extends BaseTab {
      * 删除提示词
      */
     async deletePrompt(id) {
-        const prompts = this.getState('prompts') || [];
+        const prompts = await this._getFreshPrompts();
         const prompt = prompts.find(p => p.id === id);
         
         // 使用确认弹窗
