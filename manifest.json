@@ -15,7 +15,8 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "identity"
+    "identity",
+    "activeTab"
   ],
   
   "oauth2": {
@@ -242,6 +243,7 @@
   "action": {
     "default_title": "__MSG_extName__"
   },
+
   
   "sandbox": {
     "pages": [

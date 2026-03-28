@@ -413,4 +413,11 @@ if (typeof window !== 'undefined') {
     
     // ✅ 注意：所有 Tabs 在 Timeline 初始化后统一注册，确保顺序正确
     // 见 tab-registry.js 中的 registerTimelineTabs()
+
+    // 监听来自 background 的消息（点击扩展图标时触发）
+    chrome.runtime.onMessage.addListener((request) => {
+        if (request.type === 'OPEN_PANEL_MODAL' && window.panelModal) {
+            window.panelModal.show();
+        }
+    });
 }

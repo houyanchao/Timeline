@@ -59,6 +59,12 @@ class StarredTreeRenderer {
         this._urlChangeHandler = () => this._refreshActiveState();
         window.addEventListener('url:change', this._urlChangeHandler);
 
+        this._dragState = null;
+        this._currentDropTarget = null;
+        this._dropPosition = null;
+        this._currentDropItemTarget = null;
+        this._dropItemPosition = null;
+
         const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform) ||
             (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
         const gTop = isMac ? '#6CC4F8' : '#FFD666';
@@ -148,6 +154,7 @@ class StarredTreeRenderer {
 
         const header = document.createElement('div');
         header.className = 'ait-folder-header';
+        if (this.opts.scene === 'sidebar' && level > 0) header.draggable = true;
 
         const toggle = document.createElement('span');
         toggle.className = `ait-folder-toggle ${isExpanded ? 'expanded' : ''}`;
@@ -184,13 +191,13 @@ class StarredTreeRenderer {
         const content = document.createElement('div');
         content.className = `ait-folder-content ${isExpanded ? 'expanded' : ''}`;
 
-        for (const item of filteredItems) {
-            content.appendChild(this.renderStarredItem(item));
-        }
         if (folder.children && folder.children.length > 0) {
             for (const child of folder.children) {
                 this.renderFolder(child, content, level + 1);
             }
+        }
+        for (const item of filteredItems) {
+            content.appendChild(this.renderStarredItem(item));
         }
 
         folderEl.appendChild(content);
@@ -246,6 +253,7 @@ class StarredTreeRenderer {
         const el = document.createElement('div');
         el.className = 'timeline-starred-item';
         el.dataset.turnId = item.turnId;
+        if (this.opts.scene === 'sidebar') el.draggable = true;
 
         if (this._isCurrentPage(item)) {
             el.classList.add('active');
@@ -298,6 +306,9 @@ class StarredTreeRenderer {
     _bindContainerDelegation(container) {
         let hoveredName = null;
 
+        let _clickTimer = null;
+        const DBLCLICK_DELAY = 250;
+
         const onClick = (e) => {
             const toggle = e.target.closest('.ait-folder-toggle');
             if (toggle) {
@@ -309,7 +320,11 @@ class StarredTreeRenderer {
             const info = e.target.closest('.ait-folder-info');
             if (info) {
                 const folderEl = info.closest('.ait-folder-item');
-                if (folderEl) this.toggleFolder(folderEl.dataset.folderId);
+                if (folderEl) {
+                    if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
+                    const folderId = folderEl.dataset.folderId;
+                    _clickTimer = setTimeout(() => { _clickTimer = null; this.toggleFolder(folderId); }, DBLCLICK_DELAY);
+                }
                 return;
             }
 
@@ -328,7 +343,10 @@ class StarredTreeRenderer {
                 const itemEl = e.target.closest('.timeline-starred-item');
                 if (itemEl) {
                     const item = this._itemDataMap.get(itemEl.dataset.turnId);
-                    if (item) this._navigateToItem(item);
+                    if (item) {
+                        if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
+                        _clickTimer = setTimeout(() => { _clickTimer = null; this._navigateToItem(item); }, DBLCLICK_DELAY);
+                    }
                 }
                 return;
             }
@@ -368,19 +386,327 @@ class StarredTreeRenderer {
             }
         };
 
+        // ---- 收藏项自定义拖拽（mousedown/move/up） ----
+        let _itemCD = null;
+
+        const onItemMouseDown = (e) => {
+            if (this.opts.scene !== 'sidebar' || e.button !== 0) return;
+            if (e.target.closest('.timeline-starred-item-more') || e.target.closest('.timeline-starred-item-actions')) return;
+            const itemEl = e.target.closest('.timeline-starred-item');
+            if (!itemEl) return;
+            const turnId = itemEl.dataset.turnId;
+            const item = this._itemDataMap.get(turnId);
+            if (!item) return;
+            _itemCD = {
+                startX: e.clientX, startY: e.clientY,
+                turnId, sourceFolderId: item.folderId || null,
+                sourceEl: itemEl, title: item.theme || '',
+                active: false, ghost: null
+            };
+        };
+
+        const onItemMouseMove = (e) => {
+            if (!_itemCD) return;
+            if (!_itemCD.active) {
+                if (Math.abs(e.clientX - _itemCD.startX) < 5 && Math.abs(e.clientY - _itemCD.startY) < 5) return;
+                _itemCD.active = true;
+                document.body.classList.add('ait-custom-dragging');
+                _itemCD.sourceEl.style.opacity = '0.35';
+                _itemCD.sourceEl.style.transition = 'opacity 0.15s';
+                const ghost = document.createElement('div');
+                ghost.className = 'ait-custom-drag-ghost';
+                ghost.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${this._escapeHtml(_itemCD.title || 'Item')}</span>`;
+                document.body.appendChild(ghost);
+                _itemCD.ghost = ghost;
+            }
+            if (_itemCD.ghost) {
+                _itemCD.ghost.style.left = (e.clientX + 14) + 'px';
+                _itemCD.ghost.style.top = (e.clientY - 16) + 'px';
+            }
+            const target = this._detectDropTarget(e.clientX, e.clientY, _itemCD.turnId);
+            this._clearDropIndicator();
+            this._clearItemDropIndicator();
+            if (target?.type === 'item') {
+                this._setItemDropIndicator(target.itemEl, target.position);
+                const targetFid = target.folderId === '__default__' ? null : target.folderId;
+                if (targetFid !== _itemCD.sourceFolderId) {
+                    this._setDropIndicator(target.folderEl, 'inside');
+                }
+            } else if (target?.type === 'folder') {
+                const fid = target.folderId;
+                const actualId = fid === '__default__' ? null : fid;
+                if (actualId !== _itemCD.sourceFolderId) this._setDropIndicator(target.folderEl, 'inside');
+            }
+        };
+
+        const onItemMouseUp = (e) => {
+            if (!_itemCD) return;
+            if (_itemCD.active) {
+                const target = this._detectDropTarget(e.clientX, e.clientY, _itemCD.turnId);
+                if (target?.type === 'item') {
+                    const actualFid = target.folderId === '__default__' ? null : target.folderId;
+                    const draggedTurnId = _itemCD.turnId;
+
+                    // [可能移除] 拖拽自动置顶：在 DOM 重渲染前推断 pinned 状态
+                    const shouldPin = this._inferPinFromDrop(target.itemEl);
+                    const currentItem = this._itemDataMap.get(draggedTurnId);
+                    const needsPinChange = currentItem && (!!currentItem.pinned !== shouldPin);
+
+                    this.folderManager.reorderStarredInFolder(
+                        draggedTurnId, actualFid, target.turnId, target.position
+                    ).then(async () => {
+                        // [可能移除] 拖拽自动置顶：同步 pinned 状态到 storage
+                        if (needsPinChange) {
+                            await StarStorageManager.update(`chatTimelineStar:${draggedTurnId}`, { pinned: shouldPin });
+                        }
+                        this._toastAtFolder(target.folderEl, 'dragMoveSuccess', 'Moved');
+                        this.opts.onAfterAction();
+                    }).catch(err => console.error('[StarredTreeRenderer] Item reorder failed:', err));
+                } else if (target?.type === 'folder') {
+                    const actualId = target.folderId === '__default__' ? null : target.folderId;
+                    if (actualId !== _itemCD.sourceFolderId) {
+                        this.folderManager.moveStarredToFolder(_itemCD.turnId, actualId).then(() => {
+                            this._toastAtFolder(target.folderEl, 'dragMoveSuccess', 'Moved');
+                            this.opts.onAfterAction();
+                        }).catch(err => console.error('[StarredTreeRenderer] Item move failed:', err));
+                    }
+                } else {
+                    const listContainer = this.opts.getListContainer();
+                    const starredRoot = listContainer?.closest('.ait-sidebar-starred');
+                    if (starredRoot) {
+                        const rect = starredRoot.getBoundingClientRect();
+                        const outside = e.clientX < rect.left || e.clientX > rect.right ||
+                                        e.clientY < rect.top || e.clientY > rect.bottom;
+                        if (outside) {
+                            const fid = _itemCD.sourceFolderId || '__default__';
+                            const folderEl = listContainer.querySelector(`[data-folder-id="${fid}"]`);
+                            const turnId = _itemCD.turnId;
+                            itemCDCleanup();
+                            this.handleUnstar(turnId, folderEl);
+                            return;
+                        }
+                    }
+                }
+            }
+            itemCDCleanup();
+        };
+
+        const onItemKeyDown = (e) => { if (e.key === 'Escape' && _itemCD?.active) itemCDCleanup(); };
+
+        const itemCDCleanup = () => {
+            if (!_itemCD) return;
+            document.body.classList.remove('ait-custom-dragging');
+            if (_itemCD.sourceEl) { _itemCD.sourceEl.style.opacity = ''; _itemCD.sourceEl.style.transition = ''; }
+            if (_itemCD.ghost) _itemCD.ghost.remove();
+            this._clearDropIndicator();
+            this._clearItemDropIndicator();
+            _itemCD = null;
+        };
+
+        const onDragStart = (e) => {
+            if (_itemCD) { e.preventDefault(); return; }
+            if (this.opts.scene !== 'sidebar') return;
+
+            const headerEl = e.target.closest('.ait-folder-header');
+            if (headerEl) {
+                const folderEl = headerEl.closest('.ait-folder-item');
+                if (!folderEl || folderEl.classList.contains('default-folder')) {
+                    e.preventDefault();
+                    return;
+                }
+                const folderId = folderEl.dataset.folderId;
+                const data = this._folderDataMap.get(folderId);
+                if (!data || data.level === 0) { e.preventDefault(); return; }
+                this._dragState = {
+                    type: 'folder', id: folderId,
+                    sourceLevel: data.level,
+                    sourceParentId: data.folder.parentId || null,
+                    element: folderEl
+                };
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', folderId);
+                requestAnimationFrame(() => folderEl.classList.add('ait-dragging'));
+            }
+        };
+
+        const onDragOver = (e) => {
+            if (!this._dragState) {
+                const folderEl = e.target.closest('.ait-folder-item');
+                if (!folderEl) { this._clearDropIndicator(); return; }
+                const types = e.dataTransfer?.types || [];
+                if (types.includes('text/uri-list') || types.includes('text/plain') || types.includes('text/html')) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                    this._setDropIndicator(folderEl, 'inside');
+                }
+                return;
+            }
+
+            const folderEl = e.target.closest('.ait-folder-item');
+            if (!folderEl) { this._clearDropIndicator(); return; }
+
+            const targetFolderId = folderEl.dataset.folderId;
+
+            if (this._dragState.type === 'item') {
+                const actualTargetId = targetFolderId === '__default__' ? null : targetFolderId;
+                if (actualTargetId === this._dragState.sourceFolderId) {
+                    this._clearDropIndicator();
+                    return;
+                }
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                this._setDropIndicator(folderEl, 'inside');
+
+            } else if (this._dragState.type === 'folder') {
+                if (targetFolderId === this._dragState.id || targetFolderId === '__default__') {
+                    this._clearDropIndicator();
+                    return;
+                }
+                const targetData = this._folderDataMap.get(targetFolderId);
+                if (!targetData) { this._clearDropIndicator(); return; }
+
+                const sameParent = targetData.level === this._dragState.sourceLevel &&
+                    (targetData.folder.parentId || null) === this._dragState.sourceParentId;
+
+                if (sameParent) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    const headerEl = folderEl.querySelector(':scope > .ait-folder-header');
+                    const rect = headerEl ? headerEl.getBoundingClientRect() : folderEl.getBoundingClientRect();
+                    const pos = e.clientY < (rect.top + rect.height / 2) ? 'before' : 'after';
+                    this._setDropIndicator(folderEl, pos);
+                } else if (targetData.level === 0 && targetFolderId !== this._dragState.sourceParentId) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    this._setDropIndicator(folderEl, 'inside');
+                } else {
+                    this._clearDropIndicator();
+                }
+            }
+        };
+
+        const onDrop = async (e) => {
+            if (!this._dragState) {
+                e.preventDefault();
+                const folderEl = e.target.closest('.ait-folder-item');
+                if (folderEl) {
+                    const url = (e.dataTransfer.getData('text/uri-list') || '').split('\n').filter(l => l && !l.startsWith('#'))[0]?.trim()
+                             || e.dataTransfer.getData('URL') || '';
+                    const plainText = e.dataTransfer.getData('text/plain') || '';
+                    const html = e.dataTransfer.getData('text/html') || '';
+                    if (url) {
+                        await this._handleExternalDrop(url, plainText, html, folderEl);
+                    }
+                }
+                this._clearDropIndicator();
+                return;
+            }
+            e.preventDefault();
+
+            const folderEl = e.target.closest('.ait-folder-item');
+            if (!folderEl) { this._cleanupDrag(); return; }
+
+            const targetFolderId = folderEl.dataset.folderId;
+
+            if (this._dragState.type === 'item') {
+                const actualTargetId = targetFolderId === '__default__' ? null : targetFolderId;
+                if (actualTargetId === this._dragState.sourceFolderId) { this._cleanupDrag(); return; }
+                try {
+                    await this.folderManager.moveStarredToFolder(this._dragState.id, actualTargetId);
+                    this._toast('success', 'dragMoveSuccess', 'Moved');
+                    await this.opts.onAfterAction();
+                } catch (err) {
+                    console.error('[StarredTreeRenderer] Drag move failed:', err);
+                }
+
+            } else if (this._dragState.type === 'folder') {
+                if (targetFolderId === this._dragState.id || targetFolderId === '__default__') {
+                    this._cleanupDrag(); return;
+                }
+                const position = this._dropPosition;
+                if (position === 'inside') {
+                    const result = await this.folderManager.moveFolderToParent(this._dragState.id, targetFolderId);
+                    if (result.ok) {
+                        this._toastAtFolder(folderEl, 'dragMoveSuccess', 'Moved');
+                        await this.opts.onAfterAction();
+                    } else if (result.error === 'hasChildren') {
+                        this._toast('error', 'folderMoveHasChildren', 'Has subfolders, cannot nest further');
+                    } else if (result.error === 'maxDepth') {
+                        this._toast('error', 'folderMoveMaxDepth', 'Maximum folder depth reached');
+                    }
+                } else if (position === 'before' || position === 'after') {
+                    try {
+                        await this.folderManager.moveFolderToPosition(this._dragState.id, targetFolderId, position);
+                        await this.opts.onAfterAction();
+                    } catch (err) {
+                        console.error('[StarredTreeRenderer] Folder reorder failed:', err);
+                    }
+                }
+            }
+            this._cleanupDrag();
+        };
+
+        const onDragEnd = () => { this._cleanupDrag(); };
+
+        const onDblClick = (e) => {
+            if (_clickTimer) { clearTimeout(_clickTimer); _clickTimer = null; }
+
+            const info = e.target.closest('.ait-folder-info');
+            if (info) {
+                const folderEl = info.closest('.ait-folder-item');
+                if (folderEl && !folderEl.classList.contains('default-folder')) {
+                    const data = this._folderDataMap.get(folderEl.dataset.folderId);
+                    if (data) this.handleEditFolder(data.folder.id, data.folder.name);
+                }
+                return;
+            }
+
+            const nameEl = e.target.closest('.timeline-starred-item-name');
+            if (nameEl) {
+                const itemEl = nameEl.closest('.timeline-starred-item');
+                if (itemEl) {
+                    const item = this._itemDataMap.get(itemEl.dataset.turnId);
+                    if (item) this.handleEditStarred(item.turnId, item.theme, item.folderId);
+                }
+                return;
+            }
+        };
+
+        container.addEventListener('dblclick', onDblClick);
         container.addEventListener('click', onClick);
         container.addEventListener('mouseover', onMouseover);
         container.addEventListener('mouseout', onMouseout);
+        container.addEventListener('mousedown', onItemMouseDown, true);
+        container.addEventListener('dragstart', onDragStart);
+        container.addEventListener('dragover', onDragOver);
+        container.addEventListener('drop', onDrop);
+        container.addEventListener('dragend', onDragEnd);
+        document.addEventListener('mousemove', onItemMouseMove);
+        document.addEventListener('mouseup', onItemMouseUp);
+        document.addEventListener('keydown', onItemKeyDown);
 
-        this._delegateHandlers = { container, onClick, onMouseover, onMouseout };
+        this._delegateHandlers = { container, onDblClick, onClick, onMouseover, onMouseout, onItemMouseDown, onItemMouseMove, onItemMouseUp, onItemKeyDown, onDragStart, onDragOver, onDrop, onDragEnd };
     }
 
     _unbindContainerDelegation() {
         if (!this._delegateHandlers) return;
-        const { container, onClick, onMouseover, onMouseout } = this._delegateHandlers;
-        container.removeEventListener('click', onClick);
-        container.removeEventListener('mouseover', onMouseover);
-        container.removeEventListener('mouseout', onMouseout);
+        const h = this._delegateHandlers;
+        if (h.onDblClick) h.container.removeEventListener('dblclick', h.onDblClick);
+        h.container.removeEventListener('click', h.onClick);
+        h.container.removeEventListener('mouseover', h.onMouseover);
+        h.container.removeEventListener('mouseout', h.onMouseout);
+        h.container.removeEventListener('mousedown', h.onItemMouseDown, true);
+        if (h.onDragStart) {
+            h.container.removeEventListener('dragstart', h.onDragStart);
+            h.container.removeEventListener('dragover', h.onDragOver);
+            h.container.removeEventListener('drop', h.onDrop);
+            h.container.removeEventListener('dragend', h.onDragEnd);
+        }
+        if (h.onItemMouseMove) {
+            document.removeEventListener('mousemove', h.onItemMouseMove);
+            document.removeEventListener('mouseup', h.onItemMouseUp);
+            document.removeEventListener('keydown', h.onItemKeyDown);
+        }
         this._delegateHandlers = null;
     }
 
@@ -493,6 +819,23 @@ class StarredTreeRenderer {
         );
     }
 
+    _toastAtFolder(folderEl, msgKey, fallback) {
+        if (!window.globalToastManager) return;
+        const header = folderEl.querySelector(':scope > .ait-folder-header') || folderEl;
+        window.globalToastManager.success(
+            chrome.i18n.getMessage(msgKey) || fallback,
+            header,
+            {
+                position: 'right',
+                gap: 6,
+                color: {
+                    light: { backgroundColor: '#0d0d0d', textColor: '#ffffff', borderColor: '#0d0d0d' },
+                    dark: { backgroundColor: '#ffffff', textColor: '#1f2937', borderColor: '#e5e7eb' }
+                }
+            }
+        );
+    }
+
     async handleCreateFolder(parentId = null) {
         if (!window.folderEditModal) return;
         try {
@@ -505,7 +848,7 @@ class StarredTreeRenderer {
                 mode: 'create', title,
                 placeholder: chrome.i18n.getMessage('vzkpmx') || 'Folder name',
                 requiredMessage: chrome.i18n.getMessage('kmxpvz') || 'Name is required',
-                maxLength: 10
+                maxLength: 15
             });
             if (!result) return;
 
@@ -535,7 +878,7 @@ class StarredTreeRenderer {
                 name: currentName,
                 icon: folder.icon || '',
                 placeholder: chrome.i18n.getMessage('mvzxkp') || 'Folder name',
-                maxLength: 10
+                maxLength: 15
             });
             if (!result) return;
 
@@ -656,11 +999,29 @@ class StarredTreeRenderer {
         }
     }
 
-    async handleUnstar(turnId) {
+    async handleUnstar(turnId, anchorEl = null) {
         try {
+            if (!anchorEl) {
+                const list = this.opts.getListContainer();
+                if (list) {
+                    const items = list.querySelectorAll('.timeline-starred-item');
+                    for (const el of items) {
+                        if (el.dataset.turnId === turnId) {
+                            anchorEl = el.closest('.ait-folder-item');
+                            break;
+                        }
+                    }
+                }
+            }
+
             const key = `chatTimelineStar:${turnId}`;
             await StarStorageManager.remove(key);
-            this._toast('success', 'pzmvkx', 'Unstarred');
+
+            if (anchorEl) {
+                this._toastAtFolder(anchorEl, 'pzmvkx', 'Unstarred');
+            } else {
+                this._toast('success', 'pzmvkx', 'Unstarred');
+            }
             await this.opts.onAfterAction();
         } catch (error) {
             console.error('[StarredTreeRenderer] Unstar failed:', error);
@@ -773,5 +1134,163 @@ class StarredTreeRenderer {
         const d = document.createElement('div');
         d.textContent = text;
         return d.innerHTML;
+    }
+
+    // ==================== 外部拖入处理 ====================
+
+    async _handleExternalDrop(url, plainText, html, folderEl, dropOpts) {
+        try {
+            const folderId = folderEl.dataset.folderId;
+            const actualFolderId = folderId === '__default__' ? null : folderId;
+            const refTurnId = dropOpts?.refTurnId || null;
+            const refPosition = dropOpts?.position || null;
+
+            const urlWithoutProtocol = url.replace(/^https?:\/\//, '');
+            const key = `chatTimelineStar:${urlWithoutProtocol}:-1`;
+            const turnId = `${urlWithoutProtocol}:-1`;
+
+            const existing = await StarStorageManager.findByKey(key);
+            if (existing) {
+                if (refTurnId) {
+                    await this.folderManager.reorderStarredInFolder(turnId, actualFolderId, refTurnId, refPosition);
+                } else if ((existing.folderId || null) !== actualFolderId) {
+                    await StarStorageManager.update(key, { folderId: actualFolderId });
+                } else {
+                    return;
+                }
+                this._toastAtFolder(folderEl, 'dragMoveSuccess', 'Moved');
+                await this.opts.onAfterAction();
+                return;
+            }
+
+            let title = '';
+            if (plainText && plainText !== url && !/^https?:\/\//.test(plainText)) {
+                title = plainText.substring(0, 100);
+            }
+            if (!title && html) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                title = tmp.textContent?.trim()?.substring(0, 100) || '';
+                if (/^https?:\/\//.test(title)) title = '';
+            }
+            if (!title) {
+                title = decodeURIComponent(urlWithoutProtocol.split('/').pop() || 'Conversation');
+            }
+
+            await StarStorageManager.add({
+                key, url, urlWithoutProtocol,
+                index: -1,
+                question: title,
+                timestamp: Date.now(),
+                folderId: actualFolderId
+            });
+
+            if (refTurnId) {
+                await this.folderManager.reorderStarredInFolder(turnId, actualFolderId, refTurnId, refPosition);
+            }
+
+            this._toastAtFolder(folderEl, 'nativeMenuStarSuccess', 'Starred');
+            await this.opts.onAfterAction();
+        } catch (err) {
+            console.error('[StarredTreeRenderer] External drop failed:', err);
+        }
+    }
+
+    // ==================== 拖拽辅助 ====================
+
+    _setDropIndicator(folderEl, position) {
+        if (this._currentDropTarget === folderEl && this._dropPosition === position) return;
+        this._clearDropIndicator();
+        this._currentDropTarget = folderEl;
+        this._dropPosition = position;
+        if (position === 'inside') {
+            folderEl.classList.add('ait-drag-over');
+        } else if (position === 'before') {
+            folderEl.classList.add('ait-drop-before');
+        } else if (position === 'after') {
+            folderEl.classList.add('ait-drop-after');
+        }
+    }
+
+    _clearDropIndicator() {
+        if (this._currentDropTarget) {
+            this._currentDropTarget.classList.remove('ait-drag-over', 'ait-drop-before', 'ait-drop-after');
+            this._currentDropTarget = null;
+            this._dropPosition = null;
+        }
+    }
+
+    _cleanupDrag() {
+        if (this._dragState?.element) {
+            this._dragState.element.classList.remove('ait-dragging');
+        }
+        this._dragState = null;
+        this._clearDropIndicator();
+    }
+
+    // ==================== 收藏项位置指示 ====================
+
+    _setItemDropIndicator(itemEl, position) {
+        if (this._currentDropItemTarget === itemEl && this._dropItemPosition === position) return;
+        this._clearItemDropIndicator();
+        this._currentDropItemTarget = itemEl;
+        this._dropItemPosition = position;
+        itemEl.classList.add(position === 'before' ? 'ait-item-drop-before' : 'ait-item-drop-after');
+    }
+
+    _clearItemDropIndicator() {
+        if (this._currentDropItemTarget) {
+            this._currentDropItemTarget.classList.remove('ait-item-drop-before', 'ait-item-drop-after');
+            this._currentDropItemTarget = null;
+            this._dropItemPosition = null;
+        }
+    }
+
+    /**
+     * [可能移除] 拖拽自动置顶推断
+     *
+     * 直接使用参考项（用户拖放目标附近的收藏项）的 pinned 状态：
+     *   - 参考项是置顶的 → 返回 true（落在置顶区域）
+     *   - 参考项是非置顶的 → 返回 false（落在非置顶区域）
+     *
+     * 在置顶/非置顶边界处，_detectDropTarget 根据鼠标与元素中点的距离
+     * 决定 before/after，从而天然地将边界决定权交给用户的鼠标位置。
+     *
+     * @param {HTMLElement} refItemEl - 落点参考收藏项元素
+     * @returns {boolean}
+     */
+    _inferPinFromDrop(refItemEl) {
+        const refData = this._itemDataMap.get(refItemEl.dataset.turnId);
+        return !!refData?.pinned;
+    }
+
+    /**
+     * 拖拽悬停检测：优先检测收藏项精确位置，其次文件夹整体
+     * @returns {{ type: 'item', itemEl, folderEl, turnId, folderId, position } | { type: 'folder', folderEl, folderId } | null}
+     */
+    _detectDropTarget(clientX, clientY, sourceTurnId) {
+        const el = document.elementFromPoint(clientX, clientY);
+        if (!el) return null;
+
+        const itemEl = el.closest('.timeline-starred-item');
+        if (itemEl && itemEl.dataset.turnId !== sourceTurnId) {
+            const folderEl = itemEl.closest('.ait-folder-item');
+            if (folderEl) {
+                const rect = itemEl.getBoundingClientRect();
+                const pos = clientY < (rect.top + rect.height / 2) ? 'before' : 'after';
+                return {
+                    type: 'item', itemEl, folderEl,
+                    turnId: itemEl.dataset.turnId,
+                    folderId: folderEl.dataset.folderId,
+                    position: pos
+                };
+            }
+        }
+
+        const folderEl = el.closest('.ait-folder-item');
+        if (folderEl) {
+            return { type: 'folder', folderEl, folderId: folderEl.dataset.folderId };
+        }
+        return null;
     }
 }

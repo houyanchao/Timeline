@@ -508,5 +508,50 @@
   },
   "animViewMore": {
     "message": "更換動畫"
+  },
+  "dragMoveSuccess": {
+    "message": "已移動"
+  },
+  "starredHelpDesc": {
+    "message": "資料夾，分類整理對話，告別雜亂無章。"
+  },
+  "starredHelpTipsTitle": {
+    "message": "使用小技巧："
+  },
+  "starredHelpTip1": {
+    "message": "拖動對話到資料夾。"
+  },
+  "starredHelpTip2": {
+    "message": "拖動資料夾中的對話調整位置。"
+  },
+  "starredHelpTip3": {
+    "message": "拖動二級資料夾調整位置。"
+  },
+  "starredHelpTip4": {
+    "message": "雙擊資料夾或對話，快速編輯。"
+  },
+  "folderMoveHasChildren": {
+    "message": "含子資料夾，無法巢狀"
+  },
+  "folderMoveMaxDepth": {
+    "message": "已達最大層級"
+  },
+  "guideSubtitle": {
+    "message": "AI 對話增強外掛"
+  },
+  "guideTitle": {
+    "message": "快速開始"
+  },
+  "guideStep1": {
+    "message": "打開你在用的 AI 平台。"
+  },
+  "guideStep2": {
+    "message": "進行對話。"
+  },
+  "guideStep3": {
+    "message": "如果對話頁面右側出現時間軸，說明安裝成功。如果沒有時間軸，請重新整理對話頁面。"
+  },
+  "guidePlatformsTitle": {
+    "message": "支援的平台"
   }
 }

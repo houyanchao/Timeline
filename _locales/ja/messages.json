@@ -535,5 +535,50 @@
   },
   "animViewMore": {
     "message": "アニメーション変更"
+  },
+  "dragMoveSuccess": {
+    "message": "移動しました"
+  },
+  "starredHelpDesc": {
+    "message": "フォルダで会話を整理し、すっきり管理。"
+  },
+  "starredHelpTipsTitle": {
+    "message": "便利な使い方："
+  },
+  "starredHelpTip1": {
+    "message": "会話をフォルダにドラッグ。"
+  },
+  "starredHelpTip2": {
+    "message": "フォルダ内の会話をドラッグして並べ替え。"
+  },
+  "starredHelpTip3": {
+    "message": "サブフォルダをドラッグして並べ替え。"
+  },
+  "starredHelpTip4": {
+    "message": "フォルダや会話をダブルクリックで編集。"
+  },
+  "folderMoveHasChildren": {
+    "message": "サブフォルダを含むため、ネストできません"
+  },
+  "folderMoveMaxDepth": {
+    "message": "最大階層に達しました"
+  },
+  "guideSubtitle": {
+    "message": "AI会話拡張プラグイン"
+  },
+  "guideTitle": {
+    "message": "クイックスタート"
+  },
+  "guideStep1": {
+    "message": "使っているAIプラットフォームを開きます。"
+  },
+  "guideStep2": {
+    "message": "会話を行います。"
+  },
+  "guideStep3": {
+    "message": "会話ページの右側にタイムラインが表示されれば、インストール成功です。表示されない場合は、ページを更新してください。"
+  },
+  "guidePlatformsTitle": {
+    "message": "対応プラットフォーム"
   }
 }

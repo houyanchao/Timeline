@@ -219,6 +219,36 @@ async function downloadFromDrive(token) {
 }
 
 // ============================================
+// 扩展图标点击
+// ============================================
+
+const SUPPORTED_DOMAINS = [
+    'chatgpt.com', 'chat.openai.com', 'gemini.google.com', 'doubao.com',
+    'chat.deepseek.com', 'yiyan.baidu.com', 'qianwen.com', 'chat.qwen.ai',
+    'kimi.com', 'kimi.moonshot.cn', 'yuanbao.tencent.com', 'grok.com',
+    'perplexity.ai', 'claude.ai', 'notebooklm.google.com'
+];
+
+function isSupportedSite(url) {
+    try {
+        const hostname = new URL(url).hostname;
+        return SUPPORTED_DOMAINS.some(d => hostname === d || hostname.endsWith('.' + d));
+    } catch { return false; }
+}
+
+chrome.action.onClicked.addListener(async (tab) => {
+    if (tab.url && isSupportedSite(tab.url)) {
+        try {
+            await chrome.tabs.sendMessage(tab.id, { type: 'OPEN_PANEL_MODAL' });
+        } catch {
+            chrome.tabs.create({ url: chrome.runtime.getURL('popup/guide.html') });
+        }
+    } else {
+        chrome.tabs.create({ url: chrome.runtime.getURL('popup/guide.html') });
+    }
+});
+
+// ============================================
 // 消息处理
 // ============================================
 

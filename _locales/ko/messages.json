@@ -535,5 +535,50 @@
   },
   "animViewMore": {
     "message": "애니메이션 변경"
+  },
+  "dragMoveSuccess": {
+    "message": "이동됨"
+  },
+  "starredHelpDesc": {
+    "message": "폴더로 대화를 분류하고 깔끔하게 정리하세요."
+  },
+  "starredHelpTipsTitle": {
+    "message": "사용 팁:"
+  },
+  "starredHelpTip1": {
+    "message": "대화를 폴더로 드래그하세요."
+  },
+  "starredHelpTip2": {
+    "message": "폴더 내 대화를 드래그하여 순서를 변경하세요."
+  },
+  "starredHelpTip3": {
+    "message": "하위 폴더를 드래그하여 순서를 변경하세요."
+  },
+  "starredHelpTip4": {
+    "message": "폴더나 대화를 더블클릭하여 편집하세요."
+  },
+  "folderMoveHasChildren": {
+    "message": "하위 폴더가 있어 중첩할 수 없습니다"
+  },
+  "folderMoveMaxDepth": {
+    "message": "최대 폴더 깊이에 도달했습니다"
+  },
+  "guideSubtitle": {
+    "message": "AI 대화 향상 확장 프로그램"
+  },
+  "guideTitle": {
+    "message": "빠른 시작"
+  },
+  "guideStep1": {
+    "message": "사용하는 AI 플랫폼을 엽니다."
+  },
+  "guideStep2": {
+    "message": "대화를 진행합니다."
+  },
+  "guideStep3": {
+    "message": "대화 페이지 오른쪽에 타임라인이 나타나면 설치 성공입니다. 나타나지 않으면 페이지를 새로고침해 주세요."
+  },
+  "guidePlatformsTitle": {
+    "message": "지원 플랫폼"
   }
 }

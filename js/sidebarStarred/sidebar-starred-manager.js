@@ -54,12 +54,14 @@ class SidebarStarredManager {
         this._startReinjectCheck();
         this._startParentObserver();
         this._startNativeMenuInjector();
+        this._initCustomDrag();
         this.adapter.refreshStarredIcons?.();
         return true;
     }
 
     destroy() {
         this.isDestroyed = true;
+        this._destroyCustomDrag();
         this.treeRenderer.destroy();
         this.adapter.destroyNativeMenu?.();
         if (this._storageListener) { StorageAdapter.removeChangeListener(this._storageListener); this._storageListener = null; }
@@ -107,8 +109,34 @@ class SidebarStarredManager {
         title.className = 'ait-ss-title';
         title.textContent = chrome.i18n.getMessage('vnkxpm') || 'Starred';
 
+        const helpBtn = document.createElement('button');
+        helpBtn.className = 'ait-ss-add-btn ait-ss-help-btn';
+        helpBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        helpBtn.addEventListener('mouseenter', () => {
+            if (!window.globalTooltipManager) return;
+            const desc = chrome.i18n.getMessage('starredHelpDesc') || '文件夹，分类整理对话，告别杂乱无章。';
+            const tipsTitle = chrome.i18n.getMessage('starredHelpTipsTitle') || '使用小技巧：';
+            const tip1 = chrome.i18n.getMessage('starredHelpTip1') || '拖动对话到文件夹。';
+            const tip2 = chrome.i18n.getMessage('starredHelpTip2') || '拖动文件夹中的对话调整位置。';
+            const tip3 = chrome.i18n.getMessage('starredHelpTip3') || '拖动二级文件夹调整位置。';
+            const tip4 = chrome.i18n.getMessage('starredHelpTip4') || '双击文件夹或对话，快速编辑。';
+            const html = `<div style="font-size:12px;line-height:1.6">`
+                + `<div style="font-size:13px;font-weight:600;margin-bottom:6px">${desc}</div>`
+                + `<div style="font-weight:600;margin-bottom:4px">${tipsTitle}</div>`
+                + `<div style="padding-left:2px">`
+                + `<div>· ${tip1}</div>`
+                + `<div>· ${tip2}</div>`
+                + `<div>· ${tip3}</div>`
+                + `<div>· ${tip4}</div>`
+                + `</div></div>`;
+            window.globalTooltipManager.show('starred-help', 'button', helpBtn, { html }, { placement: 'right', gap: 6, maxWidth: 260, allowHover: true });
+        });
+        helpBtn.addEventListener('mouseleave', () => { window.globalTooltipManager?.hide(); });
+        helpBtn.addEventListener('click', (e) => e.stopPropagation());
+
         titleArea.appendChild(chevron);
         titleArea.appendChild(title);
+        titleArea.appendChild(helpBtn);
         titleArea.addEventListener('click', () => this._toggleCollapse());
 
         const headerActions = document.createElement('div');
@@ -252,5 +280,127 @@ class SidebarStarredManager {
     _startNativeMenuInjector() {
         if (!this.adapter.getClickDelegateSelector?.()) return;
         this.adapter.initNativeMenu?.(this.folderManager);
+    }
+
+    // ==================== 自定义拖拽（原生对话 → 文件夹） ====================
+
+    _initCustomDrag() {
+        this._cdState = null;
+
+        const onMouseDown = (e) => {
+            if (e.button !== 0 || this.isDestroyed) return;
+            const link = e.target.closest('a[href]');
+            if (!link || link.closest('.ait-sidebar-starred')) return;
+            const sidebar = this.adapter.findSidebarContainer();
+            if (!sidebar || !sidebar.contains(link)) return;
+
+            this._cdState = {
+                startX: e.clientX, startY: e.clientY,
+                url: link.href,
+                title: link.textContent?.trim()?.substring(0, 100) || '',
+                sourceEl: link,
+                active: false, ghost: null
+            };
+        };
+
+        const onDragStart = (e) => {
+            if (this._cdState) {
+                e.preventDefault();
+            }
+        };
+
+        const onMouseMove = (e) => {
+            if (!this._cdState) return;
+
+            if (!this._cdState.active) {
+                const dx = Math.abs(e.clientX - this._cdState.startX);
+                const dy = Math.abs(e.clientY - this._cdState.startY);
+                if (dx < 5 && dy < 5) return;
+                this._cdState.active = true;
+                document.body.classList.add('ait-custom-dragging');
+
+                const src = this._cdState.sourceEl;
+                src.style.opacity = '0.35';
+                src.style.transition = 'opacity 0.15s';
+
+                const ghost = document.createElement('div');
+                ghost.className = 'ait-custom-drag-ghost';
+                ghost.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${this._escapeText(this._cdState.title || 'Conversation')}</span>`;
+                document.body.appendChild(ghost);
+                this._cdState.ghost = ghost;
+            }
+
+            if (this._cdState.ghost) {
+                this._cdState.ghost.style.left = (e.clientX + 14) + 'px';
+                this._cdState.ghost.style.top = (e.clientY - 16) + 'px';
+            }
+
+            const target = this.treeRenderer._detectDropTarget(e.clientX, e.clientY, null);
+            this.treeRenderer._clearDropIndicator();
+            this.treeRenderer._clearItemDropIndicator();
+            if (target?.type === 'item') {
+                this.treeRenderer._setItemDropIndicator(target.itemEl, target.position);
+                this.treeRenderer._setDropIndicator(target.folderEl, 'inside');
+            } else if (target?.type === 'folder') {
+                this.treeRenderer._setDropIndicator(target.folderEl, 'inside');
+            }
+        };
+
+        const onMouseUp = (e) => {
+            if (!this._cdState) return;
+
+            if (this._cdState.active) {
+                const target = this.treeRenderer._detectDropTarget(e.clientX, e.clientY, null);
+                if (target?.type === 'item') {
+                    this.treeRenderer._handleExternalDrop(
+                        this._cdState.url, this._cdState.title, '', target.folderEl,
+                        { refTurnId: target.turnId, position: target.position }
+                    );
+                } else if (target?.type === 'folder') {
+                    this.treeRenderer._handleExternalDrop(
+                        this._cdState.url, this._cdState.title, '', target.folderEl
+                    );
+                }
+            }
+
+            this._cdCleanup();
+        };
+
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape' && this._cdState?.active) this._cdCleanup();
+        };
+
+        this._cdHandlers = { onMouseDown, onDragStart, onMouseMove, onMouseUp, onKeyDown };
+        document.addEventListener('mousedown', onMouseDown, true);
+        document.addEventListener('dragstart', onDragStart, true);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('keydown', onKeyDown);
+    }
+
+    _cdCleanup() {
+        document.body.classList.remove('ait-custom-dragging');
+        if (this._cdState?.sourceEl) {
+            this._cdState.sourceEl.style.opacity = '';
+            this._cdState.sourceEl.style.transition = '';
+        }
+        if (this._cdState?.ghost) this._cdState.ghost.remove();
+        this._cdState = null;
+        this.treeRenderer._clearDropIndicator();
+        this.treeRenderer._clearItemDropIndicator();
+    }
+
+    _escapeText(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+    _destroyCustomDrag() {
+        this._cdCleanup();
+        if (!this._cdHandlers) return;
+        const { onMouseDown, onDragStart, onMouseMove, onMouseUp, onKeyDown } = this._cdHandlers;
+        document.removeEventListener('mousedown', onMouseDown, true);
+        document.removeEventListener('dragstart', onDragStart, true);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('keydown', onKeyDown);
+        this._cdHandlers = null;
     }
 }

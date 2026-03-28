@@ -238,6 +238,11 @@ class QuickAskManager {
         if (element.closest('main, [role="main"]')) {
             return true;
         }
+
+        // 二次降级：NotebookLM 的对话容器
+        if (location.hostname === 'notebooklm.google.com' && element.closest('.chat-panel-content')) {
+            return true;
+        }
         
         return false;
     }

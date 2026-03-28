@@ -179,6 +179,23 @@ class FolderManager {
             return { urlWithoutProtocol, nodeKey, turnId };
         };
         
+        const mapItem = (item, info) => ({
+            turnId: info.turnId,
+            url: item.url || `https://${info.urlWithoutProtocol}`,
+            urlWithoutProtocol: info.urlWithoutProtocol,
+            index: info.nodeKey, nodeId: info.nodeKey,
+            theme: item.question || '整个对话',
+            timestamp: item.timestamp || 0,
+            folderId: item.folderId,
+            pinned: !!item.pinned
+        });
+
+        const sortItems = (arr) => arr.sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return 0;
+        });
+
         // 构建树状结构
         const tree = {
             folders: [],      // 根文件夹列表
@@ -216,62 +233,24 @@ class FolderManager {
                     items: [] // 子文件夹的收藏项
                 };
                 
-                // 添加子文件夹的收藏项
                 for (const item of starredItemsArray) {
-                    const { urlWithoutProtocol, nodeKey, turnId } = extractItemInfo(item);
-                    
-                    // 检查是否属于该子文件夹
-                    if (item.folderId === childFolder.id) {
-                        childNode.items.push({ 
-                            turnId,
-                            url: item.url || `https://${urlWithoutProtocol}`,
-                            urlWithoutProtocol,
-                            index: nodeKey,   // 兼容旧代码
-                            nodeId: nodeKey,  // 新字段
-                            theme: item.question || '整个对话',
-                            timestamp: item.timestamp || 0,
-                            folderId: item.folderId,
-                            pinned: !!item.pinned
-                        });
-                        assignedTurnIds.add(turnId);
-                    }
+                    if (item.folderId !== childFolder.id) continue;
+                    const info = extractItemInfo(item);
+                    childNode.items.push(mapItem(item, info));
+                    assignedTurnIds.add(info.turnId);
                 }
-                
-                childNode.items.sort((a, b) => {
-                    if (a.pinned && !b.pinned) return -1;
-                    if (!a.pinned && b.pinned) return 1;
-                    return b.timestamp - a.timestamp;
-                });
+                sortItems(childNode.items);
                 
                 folderNode.children.push(childNode);
             }
             
-            // 添加根文件夹的收藏项
             for (const item of starredItemsArray) {
-                const { urlWithoutProtocol, nodeKey, turnId } = extractItemInfo(item);
-                
-                // 检查是否属于该根文件夹
-                if (item.folderId === rootFolder.id) {
-                    folderNode.items.push({ 
-                        turnId,
-                        url: item.url || `https://${urlWithoutProtocol}`,
-                        urlWithoutProtocol,
-                        index: nodeKey,   // 兼容旧代码
-                        nodeId: nodeKey,  // 新字段
-                        theme: item.question || '整个对话',
-                        timestamp: item.timestamp || 0,
-                        folderId: item.folderId,
-                        pinned: !!item.pinned
-                    });
-                    assignedTurnIds.add(turnId);
-                }
+                if (item.folderId !== rootFolder.id) continue;
+                const info = extractItemInfo(item);
+                folderNode.items.push(mapItem(item, info));
+                assignedTurnIds.add(info.turnId);
             }
-            
-            folderNode.items.sort((a, b) => {
-                if (a.pinned && !b.pinned) return -1;
-                if (!a.pinned && b.pinned) return 1;
-                return b.timestamp - a.timestamp;
-            });
+            sortItems(folderNode.items);
             
             tree.folders.push(folderNode);
         }
@@ -284,25 +263,11 @@ class FolderManager {
             // 如果该收藏项还没有被分配到任何文件夹，则归为未分类（默认文件夹）
             // 这包括：folderId 为 null/undefined 或 folderId 指向已删除的文件夹
             if (!assignedTurnIds.has(turnId)) {
-                tree.uncategorized.push({ 
-                    turnId,
-                    url: item.url || `https://${urlWithoutProtocol}`,
-                    urlWithoutProtocol,
-                    index: nodeKey,   // 兼容旧代码
-                    nodeId: nodeKey,  // 新字段
-                    theme: item.question || '整个对话',
-                    timestamp: item.timestamp || 0,
-                    folderId: item.folderId,
-                    pinned: !!item.pinned
-                });
+                tree.uncategorized.push(mapItem(item, { urlWithoutProtocol, nodeKey, turnId }));
             }
         }
         
-        tree.uncategorized.sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;
-            if (!a.pinned && b.pinned) return 1;
-            return b.timestamp - a.timestamp;
-        });
+        sortItems(tree.uncategorized);
         
         
         return tree;
@@ -344,6 +309,114 @@ class FolderManager {
         );
         
         return siblings.some(f => f.name === name);
+    }
+
+    /**
+     * 在文件夹内重新排列收藏项位置（基于 storage 数组顺序）
+     * @param {string} turnId - 被拖拽项的 turnId
+     * @param {string|null} targetFolderId - 目标文件夹 ID
+     * @param {string|null} refTurnId - 参考项的 turnId（null = 放到末尾）
+     * @param {'before'|'after'} position - 放在参考项前面还是后面
+     */
+    async reorderStarredInFolder(turnId, targetFolderId, refTurnId, position) {
+        const srcKey = `chatTimelineStar:${turnId}`;
+        await StarStorageManager.batchUpdate(items => {
+            const srcIdx = items.findIndex(i => i.key === srcKey);
+            if (srcIdx === -1) return items;
+
+            const [item] = items.splice(srcIdx, 1);
+            item.folderId = targetFolderId;
+
+            if (!refTurnId) {
+                items.push(item);
+                return items;
+            }
+
+            const refKey = `chatTimelineStar:${refTurnId}`;
+            const refIdx = items.findIndex(i => i.key === refKey);
+            if (refIdx === -1) { items.push(item); return items; }
+
+            const insertIdx = position === 'before' ? refIdx : refIdx + 1;
+            items.splice(insertIdx, 0, item);
+            return items;
+        });
+    }
+
+    /**
+     * 移动文件夹到目标位置（同级排序）
+     * @param {string} folderId - 要移动的文件夹 ID
+     * @param {string} targetFolderId - 目标文件夹 ID
+     * @param {'before'|'after'} position - 插入到目标的前面还是后面
+     */
+    async moveFolderToPosition(folderId, targetFolderId, position) {
+        const folders = await this.getFolders();
+        const folder = folders.find(f => f.id === folderId);
+        const target = folders.find(f => f.id === targetFolderId);
+        if (!folder || !target) return;
+        if ((folder.parentId || null) !== (target.parentId || null)) return;
+
+        const parentId = folder.parentId || null;
+        const siblings = folders.filter(f => (f.parentId || null) === parentId);
+        siblings.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        const fromIdx = siblings.findIndex(f => f.id === folderId);
+        if (fromIdx === -1) return;
+        siblings.splice(fromIdx, 1);
+
+        const toIdx = siblings.findIndex(f => f.id === targetFolderId);
+        if (toIdx === -1) return;
+        const insertIdx = position === 'before' ? toIdx : toIdx + 1;
+        siblings.splice(insertIdx, 0, folder);
+
+        for (let i = 0; i < siblings.length; i++) {
+            const original = folders.find(f => f.id === siblings[i].id);
+            if (original) original.order = i;
+        }
+
+        await this.storage.set('folders', folders);
+        console.log('[FolderManager] Reordered folder:', folderId, position, targetFolderId);
+    }
+
+    /**
+     * 移动文件夹到新的父级（跨级拖拽）
+     * @param {string} folderId - 要移动的文件夹 ID
+     * @param {string|null} newParentId - 新父文件夹 ID（null = 移到根级别）
+     * @returns {Promise<{ok:boolean, error?:string}>}
+     */
+    async moveFolderToParent(folderId, newParentId) {
+        const folders = await this.getFolders();
+        const folder = folders.find(f => f.id === folderId);
+        if (!folder) return { ok: false, error: 'Folder not found' };
+
+        if ((folder.parentId || null) === (newParentId || null)) return { ok: true };
+
+        if (newParentId === folderId) return { ok: false, error: 'Cannot move into itself' };
+
+        if (newParentId) {
+            const hasChildren = folders.some(f => f.parentId === folderId);
+            if (hasChildren) {
+                return { ok: false, error: 'hasChildren' };
+            }
+            const parent = folders.find(f => f.id === newParentId);
+            if (!parent) return { ok: false, error: 'Target not found' };
+            if (parent.parentId) {
+                return { ok: false, error: 'maxDepth' };
+            }
+        }
+
+        const oldParentId = folder.parentId || null;
+        folder.parentId = newParentId || null;
+
+        const newSiblings = folders.filter(f => (f.parentId || null) === (newParentId || null) && f.id !== folderId);
+        folder.order = newSiblings.length;
+
+        const oldSiblings = folders.filter(f => (f.parentId || null) === oldParentId && f.id !== folderId);
+        oldSiblings.sort((a, b) => (a.order || 0) - (b.order || 0));
+        oldSiblings.forEach((f, i) => { f.order = i; });
+
+        await this.storage.set('folders', folders);
+        console.log('[FolderManager] Moved folder to parent:', folderId, '->', newParentId);
+        return { ok: true };
     }
 
     async togglePinFolder(folderId) {

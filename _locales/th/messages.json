@@ -508,5 +508,50 @@
   },
   "animViewMore": {
     "message": "เปลี่ยนแอนิเมชัน"
+  },
+  "dragMoveSuccess": {
+    "message": "ย้ายแล้ว"
+  },
+  "starredHelpDesc": {
+    "message": "Folders help you organize conversations and stay clutter-free."
+  },
+  "starredHelpTipsTitle": {
+    "message": "Quick tips:"
+  },
+  "starredHelpTip1": {
+    "message": "Drag conversations into a folder."
+  },
+  "starredHelpTip2": {
+    "message": "Drag items within a folder to reorder."
+  },
+  "starredHelpTip3": {
+    "message": "Drag subfolders to reorder."
+  },
+  "starredHelpTip4": {
+    "message": "Double-click a folder or item to edit."
+  },
+  "folderMoveHasChildren": {
+    "message": "Has subfolders, cannot nest further"
+  },
+  "folderMoveMaxDepth": {
+    "message": "Maximum folder depth reached"
+  },
+  "guideSubtitle": {
+    "message": "AI conversation enhancement extension"
+  },
+  "guideTitle": {
+    "message": "Quick Start"
+  },
+  "guideStep1": {
+    "message": "Open an AI platform you use."
+  },
+  "guideStep2": {
+    "message": "Start a conversation."
+  },
+  "guideStep3": {
+    "message": "If a timeline appears on the right side of the conversation page, the installation is successful. If not, please refresh the page."
+  },
+  "guidePlatformsTitle": {
+    "message": "Supported Platforms"
   }
 }

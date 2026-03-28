@@ -182,7 +182,7 @@ class StarredTab extends BaseTab {
         overlay.innerHTML = `
             <div class="starred-platform-modal">
                 <div class="starred-platform-modal-header">
-                    <span>${chrome.i18n.getMessage('sidebarStarredManageTitle') || 'Sidebar Starred'}</span>
+                    <span>${chrome.i18n.getMessage('mkvzpx') || 'Supported Platforms'}</span>
                     <button class="starred-platform-modal-close">✕</button>
                 </div>
                 <div class="starred-platform-modal-body">${platformItems}</div>
