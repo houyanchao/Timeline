@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "short_name": "Timeline",
-  "version": "4.5.6",
+  "version": "4.5.7",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "author": "yanchao hou",
@@ -50,6 +50,7 @@
         "js/global/dropdown-manager/index.js",
         "js/global/popconfirm-manager/index.js",
         "js/global/event-delegate-manager/index.js",
+        "js/chat-width-manager/index.js",
         "js/formula/libs/temml.min.js",
         "js/formula/latex-extractor.js",
         "js/formula/formula-manager.js",
@@ -157,6 +158,7 @@
         "js/highlight/libs/diff-match-patch.js",
         "js/highlight/highlight-manager.js",
         "js/panelModal/tabs/highlight/index.js",
+        "js/panelModal/tabs/chatWidth/index.js",
         "js/quickAsk/quick-ask-manager.js",
         "js/quickAsk/index.js",
         "js/highlight/index.js",
@@ -208,6 +210,7 @@
         "js/quickAsk/styles.css",
         "js/highlight/styles.css",
         "js/panelModal/tabs/highlight/styles.css",
+        "js/panelModal/tabs/chatWidth/styles.css",
         "js/mermaid/styles.css"
       ],
       "run_at": "document_idle"

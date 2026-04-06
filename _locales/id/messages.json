@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Data diunduh dan digabungkan dari Google Drive. Muat ulang halaman untuk menerapkan."
+  },
+  "chatWidthTitle": {
+    "message": "Lebar chat"
+  },
+  "chatWidthHint": {
+    "message": "Perlebar area percakapan untuk memanfaatkan layar"
+  },
+  "chatWidthAdjust": {
+    "message": "Sesuaikan"
+  },
+  "chatWidthCurrent": {
+    "message": "Lebar saat ini"
+  },
+  "chatWidthNormal": {
+    "message": "Normal"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

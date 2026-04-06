@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Dữ liệu đã tải và hợp nhất từ Google Drive. Làm mới trang để áp dụng."
+  },
+  "chatWidthTitle": {
+    "message": "Độ rộng trò chuyện"
+  },
+  "chatWidthHint": {
+    "message": "Mở rộng vùng hội thoại để tận dụng màn hình"
+  },
+  "chatWidthAdjust": {
+    "message": "Điều chỉnh"
+  },
+  "chatWidthCurrent": {
+    "message": "Độ rộng hiện tại"
+  },
+  "chatWidthNormal": {
+    "message": "Bình thường"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

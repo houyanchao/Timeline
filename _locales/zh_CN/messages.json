@@ -803,5 +803,23 @@
   },
   "gdriveMergeHint": {
     "message": "数据已成功从 Google Drive 下载并合并，需要刷新页面后生效"
+  },
+  "chatWidthTitle": {
+    "message": "对话宽度"
+  },
+  "chatWidthHint": {
+    "message": "调大对话区域宽度，充分利用屏幕空间"
+  },
+  "chatWidthAdjust": {
+    "message": "调节"
+  },
+  "chatWidthCurrent": {
+    "message": "当前宽度"
+  },
+  "chatWidthNormal": {
+    "message": "正常"
+  },
+  "chatWidthConfirm": {
+    "message": "确定"
   }
 }

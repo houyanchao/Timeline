@@ -19,6 +19,7 @@ function getTabClass(name) {
         case 'DataSyncTab': return typeof DataSyncTab !== 'undefined' ? DataSyncTab : null;
         case 'AboutTab': return typeof AboutTab !== 'undefined' ? AboutTab : null;
         case 'HighlightTab': return typeof HighlightTab !== 'undefined' ? HighlightTab : null;
+        case 'ChatWidthTab': return typeof ChatWidthTab !== 'undefined' ? ChatWidthTab : null;
         default: return null;
     }
 }
@@ -37,6 +38,7 @@ const TAB_CONFIG = [
     { id: 'formula', className: 'FormulaTab' },
     { id: 'runner', className: 'RunnerTab' },
     { id: 'highlight', className: 'HighlightTab' },
+    { id: 'chat-width', className: 'ChatWidthTab' },
     { id: 'animation', className: 'AnimationTab' },
     { id: 'data-sync', className: 'DataSyncTab' }
 ];
@@ -65,8 +67,11 @@ function registerAllTabs() {
             continue;
         }
         
-        // 注册 tab
-        pm.registerTab(new TabClass());
+        const tabInstance = new TabClass();
+        if (typeof tabInstance.shouldShow === 'function' && !tabInstance.shouldShow()) {
+            continue;
+        }
+        pm.registerTab(tabInstance);
         }
 }
 

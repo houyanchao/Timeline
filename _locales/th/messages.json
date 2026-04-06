@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "ดาวน์โหลดและรวมข้อมูลจาก Google Drive แล้ว รีเฟรชหน้าเพื่อใช้งาน"
+  },
+  "chatWidthTitle": {
+    "message": "ความกว้างแชท"
+  },
+  "chatWidthHint": {
+    "message": "ขยายพื้นที่สนทนาเพื่อใช้หน้าจอได้เต็มที่"
+  },
+  "chatWidthAdjust": {
+    "message": "ปรับ"
+  },
+  "chatWidthCurrent": {
+    "message": "ความกว้างปัจจุบัน"
+  },
+  "chatWidthNormal": {
+    "message": "ปกติ"
+  },
+  "chatWidthConfirm": {
+    "message": "ตกลง"
   }
 }

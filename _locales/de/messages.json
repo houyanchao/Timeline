@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Daten von Google Drive heruntergeladen und zusammengeführt. Seite aktualisieren, um Änderungen anzuwenden."
+  },
+  "chatWidthTitle": {
+    "message": "Chat-Breite"
+  },
+  "chatWidthHint": {
+    "message": "Konversationsbereich verbreitern für bessere Bildschirmnutzung"
+  },
+  "chatWidthAdjust": {
+    "message": "Anpassen"
+  },
+  "chatWidthCurrent": {
+    "message": "Aktuelle Breite"
+  },
+  "chatWidthNormal": {
+    "message": "Normal"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

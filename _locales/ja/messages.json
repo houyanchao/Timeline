@@ -761,5 +761,23 @@
   },
   "gdriveMergeHint": {
     "message": "Google Drive からデータをダウンロードし統合しました。ページを更新して反映してください。"
+  },
+  "chatWidthTitle": {
+    "message": "チャット幅"
+  },
+  "chatWidthHint": {
+    "message": "会話エリアを広げて画面を有効活用"
+  },
+  "chatWidthAdjust": {
+    "message": "調整"
+  },
+  "chatWidthCurrent": {
+    "message": "現在の幅"
+  },
+  "chatWidthNormal": {
+    "message": "通常"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

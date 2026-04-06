@@ -39,7 +39,10 @@ const SITE_INFO = [
             quickAskPosition: 'bottomLeft',  // 追问按钮位置
             chatTimes: true,  // 提问时间记录
             stableNodeId: true,  // 使用稳定的节点 ID（data-message-id），需等待 id 分配后记录
-            sidebarStarred: true  // 侧边栏收藏列表
+            sidebarStarred: true,  // 侧边栏收藏列表
+            chatWidth: {
+                selectors: ['.text-token-text-primary > div > div']
+            }
         }
     },
     {
@@ -55,7 +58,10 @@ const SITE_INFO = [
             scrollToBottom: true,  // 回到底部按钮
             chatTimes: true,  // 提问时间记录
             stableNodeId: true,  // 使用稳定的节点 ID（父元素 id），需等待 id 分配后记录
-            sidebarStarred: true  // 侧边栏收藏列表
+            sidebarStarred: true,  // 侧边栏收藏列表
+            chatWidth: {
+                selectors: ['.conversation-container', 'user-query']
+            }
         }
     },
     {
@@ -84,7 +90,7 @@ const SITE_INFO = [
             inputAnimation: true,
             quickAsk: true,
             chatTimes: true,  // 提问时间记录
-            sidebarStarred: true  // 侧边栏收藏列表
+            sidebarStarred: true,  // 侧边栏收藏列表
         }
     },
     {

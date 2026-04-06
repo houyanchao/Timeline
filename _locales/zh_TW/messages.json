@@ -767,5 +767,23 @@
   },
   "gdriveMergeHint": {
     "message": "資料已成功從 Google Drive 下載並合併，需要重新整理頁面後生效"
+  },
+  "chatWidthTitle": {
+    "message": "對話寬度"
+  },
+  "chatWidthHint": {
+    "message": "調大對話區域寬度，充分利用螢幕空間"
+  },
+  "chatWidthAdjust": {
+    "message": "調節"
+  },
+  "chatWidthCurrent": {
+    "message": "目前寬度"
+  },
+  "chatWidthNormal": {
+    "message": "正常"
+  },
+  "chatWidthConfirm": {
+    "message": "確定"
   }
 }

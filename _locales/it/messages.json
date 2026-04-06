@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Dati scaricati e uniti da Google Drive. Aggiorna la pagina per applicare."
+  },
+  "chatWidthTitle": {
+    "message": "Larghezza chat"
+  },
+  "chatWidthHint": {
+    "message": "Allarga l'area di conversazione per sfruttare lo schermo"
+  },
+  "chatWidthAdjust": {
+    "message": "Regola"
+  },
+  "chatWidthCurrent": {
+    "message": "Larghezza attuale"
+  },
+  "chatWidthNormal": {
+    "message": "Normale"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

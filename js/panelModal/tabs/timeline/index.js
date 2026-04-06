@@ -241,6 +241,7 @@ class TimelineSettingsTab extends BaseTab {
             });
         }
         
+        
     }
 
     async _showPlatformManageModal() {

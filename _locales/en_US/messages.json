@@ -734,5 +734,23 @@
   },
   "gdriveMergeHint": {
     "message": "Data downloaded and merged from Google Drive. Refresh to apply changes."
+  },
+  "chatWidthTitle": {
+    "message": "Chat Width"
+  },
+  "chatWidthHint": {
+    "message": "Widen the conversation area to make better use of screen space"
+  },
+  "chatWidthAdjust": {
+    "message": "Adjust"
+  },
+  "chatWidthCurrent": {
+    "message": "Current width"
+  },
+  "chatWidthNormal": {
+    "message": "Normal"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

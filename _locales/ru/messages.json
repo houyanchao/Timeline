@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Данные загружены и объединены из Google Drive. Обновите страницу для применения."
+  },
+  "chatWidthTitle": {
+    "message": "Ширина чата"
+  },
+  "chatWidthHint": {
+    "message": "Расширить область диалога для лучшего использования экрана"
+  },
+  "chatWidthAdjust": {
+    "message": "Настроить"
+  },
+  "chatWidthCurrent": {
+    "message": "Текущая ширина"
+  },
+  "chatWidthNormal": {
+    "message": "Обычная"
+  },
+  "chatWidthConfirm": {
+    "message": "OK"
   }
 }

@@ -710,5 +710,23 @@
   },
   "gdriveMergeHint": {
     "message": "Google Drive से डेटा डाउनलोड और मर्ज किया गया। लागू करने के लिए पेज रीफ्रेश करें।"
+  },
+  "chatWidthTitle": {
+    "message": "चैट चौड़ाई"
+  },
+  "chatWidthHint": {
+    "message": "स्क्रीन का बेहतर उपयोग करने के लिए बातचीत क्षेत्र चौड़ा करें"
+  },
+  "chatWidthAdjust": {
+    "message": "समायोजित करें"
+  },
+  "chatWidthCurrent": {
+    "message": "वर्तमान चौड़ाई"
+  },
+  "chatWidthNormal": {
+    "message": "सामान्य"
+  },
+  "chatWidthConfirm": {
+    "message": "ठीक है"
   }
 }

@@ -761,5 +761,23 @@
   },
   "gdriveMergeHint": {
     "message": "Google Drive에서 데이터를 다운로드하고 병합했습니다. 페이지를 새로고침하여 적용하세요."
+  },
+  "chatWidthTitle": {
+    "message": "대화 너비"
+  },
+  "chatWidthHint": {
+    "message": "대화 영역을 넓혀 화면 공간을 활용하세요"
+  },
+  "chatWidthAdjust": {
+    "message": "조절"
+  },
+  "chatWidthCurrent": {
+    "message": "현재 너비"
+  },
+  "chatWidthNormal": {
+    "message": "기본"
+  },
+  "chatWidthConfirm": {
+    "message": "확인"
   }
 }

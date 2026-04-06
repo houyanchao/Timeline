@@ -1,0 +1,29 @@
+/**
+ * ChatWidth Tab Styles
+ */
+
+.chat-width-settings {
+    padding: 0;
+}
+
+.cw-preview-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin-top: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.cw-preview-label {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.cw-preview-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.5px;
+}
