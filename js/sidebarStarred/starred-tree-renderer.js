@@ -154,7 +154,7 @@ class StarredTreeRenderer {
 
         const header = document.createElement('div');
         header.className = 'ait-folder-header';
-        if (level > 0) header.draggable = true;
+        header.draggable = true;
 
         const toggle = document.createElement('span');
         toggle.className = `ait-folder-toggle ${isExpanded ? 'expanded' : ''}`;
@@ -515,7 +515,7 @@ class StarredTreeRenderer {
                 }
                 const folderId = folderEl.dataset.folderId;
                 const data = this._folderDataMap.get(folderId);
-                if (!data || data.level === 0) { e.preventDefault(); return; }
+                if (!data) { e.preventDefault(); return; }
                 this._dragState = {
                     type: 'folder', id: folderId,
                     sourceLevel: data.level,
