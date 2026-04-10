@@ -172,7 +172,17 @@ class SmartEnterManager {
     _attachToInputIfNeeded() {
         try {
             const selector = this.adapter.getInputSelector();
-            const input = document.querySelector(selector);
+            const inputs = document.querySelectorAll(selector);
+            let input = null;
+            
+            // Find the first visible input element
+            for (const el of inputs) {
+                const rect = el.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    input = el;
+                    break;
+                }
+            }
             
             if (input) {
                 // 使用 WeakMap 检查是否已附加

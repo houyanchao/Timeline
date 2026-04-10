@@ -12,57 +12,88 @@
 
 class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
     matches() {
-        return matchesPlatform(location.href, 'doubao');
+        return matchesPlatform(location.href, "doubao");
     }
 
     findSidebarContainer() {
-        const history = document.querySelector('[data-history-container="true"]');
+        let history = document.querySelector('[data-history-container="true"]');
         if (history?.parentElement) return history.parentElement;
+
+        // Fallback: 查找包含多个 /chat/ 链接的容器
+        const chatLinks = document.querySelectorAll('a[href^="/chat/"]');
+        if (chatLinks.length > 0) {
+            // 找到包含这些链接的最近共同祖先
+            let ancestor = chatLinks[0].parentElement;
+            while (ancestor && ancestor !== document.body) {
+                const containsAll = Array.from(chatLinks)
+                    .slice(0, 3)
+                    .every((link) => ancestor.contains(link));
+                if (containsAll) return ancestor;
+                ancestor = ancestor.parentElement;
+            }
+        }
         return null;
     }
 
     findInsertionPoint() {
         const history = document.querySelector('[data-history-container="true"]');
         if (history?.parentElement) {
-            return { parent: history.parentElement, reference: history, position: 'before' };
+            return { parent: history.parentElement, reference: history, position: "before" };
+        }
+
+        // Fallback
+        const container = this.findSidebarContainer();
+        if (container && container.firstElementChild) {
+            return { parent: container, reference: container.firstElementChild, position: "before" };
         }
         return null;
     }
 
     getPlatformClass() {
-        return 'doubao';
+        return "doubao";
     }
 
     navigateToConversation(url) {
         try {
-            const convId = new URL(url).pathname.split('/').filter(Boolean).pop();
+            const convId = new URL(url).pathname.split("/").filter(Boolean).pop();
             if (!convId) return false;
             const history = document.querySelector('[data-history-container="true"]');
             if (!history) return false;
             const link = history.querySelector(`a[href*="${convId}"]`);
-            if (link) { link.click(); return true; }
-        } catch { /* ignore */ }
+            if (link) {
+                link.click();
+                return true;
+            }
+        } catch {
+            /* ignore */
+        }
         return false;
     }
 
     // ==================== 侧边栏收藏标记 ====================
 
     getConversationElements() {
-        return document.querySelectorAll('a[data-testid="chat_list_thread_item"]');
+        return document.querySelectorAll('a[data-testid="chat_list_thread_item"], a[href^="/chat/"]');
     }
 
     getConversationUrlPath(convEl) {
-        try { return new URL(convEl.href).pathname; } catch { return ''; }
+        try {
+            return new URL(convEl.href).pathname;
+        } catch {
+            return "";
+        }
     }
 
     injectStarIcon(convEl) {
-        const titleEl = convEl.querySelector('[data-testid="chat_list_item_title"]');
+        const titleEl =
+            convEl.querySelector('[data-testid="chat_list_item_title"], [class*="title"], [class*="name"]') || convEl;
         if (!titleEl || titleEl.querySelector(`[${BaseSidebarStarredAdapter.STAR_ICON_ATTR}]`)) return;
 
-        const icon = document.createElement('span');
-        icon.setAttribute(BaseSidebarStarredAdapter.STAR_ICON_ATTR, 'true');
-        icon.className = 'ait-conv-starred-icon';
-        icon.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="rgb(255, 125, 3)" stroke="rgb(255, 125, 3)" stroke-width="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+        const icon = document.createElement("span");
+        icon.setAttribute(BaseSidebarStarredAdapter.STAR_ICON_ATTR, "true");
+        icon.className = "ait-conv-starred-icon";
+        icon.innerHTML =
+            '<svg viewBox="0 0 24 24" width="14" height="14" fill="rgb(255, 125, 3)" stroke="rgb(255, 125, 3)" stroke-width="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
         titleEl.insertBefore(icon, titleEl.firstChild);
     }
 
@@ -78,17 +109,19 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
     }
 
     getConversationFromClickTarget(el) {
-        const convLink = el.closest('a[data-testid="chat_list_thread_item"]');
+        const convLink = el.closest('a[data-testid="chat_list_thread_item"], a[href^="/chat/"]');
         if (!convLink) return null;
-        const titleEl = convLink.querySelector('[data-testid="chat_list_item_title"]');
+        const titleEl = convLink.querySelector(
+            '[data-testid="chat_list_item_title"], [class*="title"], [class*="name"]',
+        );
         return {
             url: convLink.href,
-            title: titleEl?.textContent?.trim() || ''
+            title: titleEl?.textContent?.trim() || "",
         };
     }
 
     findCurrentMenuOverlay() {
-        const wrappers = document.querySelectorAll('[data-radix-popper-content-wrapper]');
+        const wrappers = document.querySelectorAll("[data-radix-popper-content-wrapper]");
         for (const w of wrappers) {
             if (w.querySelector('[role="menu"]')) return w;
         }
@@ -110,25 +143,25 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
 
         const refItem = items[0];
         const menuItem = refItem.cloneNode(true);
-        menuItem.setAttribute('data-ait-star-folder', 'true');
-        menuItem.removeAttribute('aria-disabled');
-        menuItem.removeAttribute('data-disabled');
+        menuItem.setAttribute("data-ait-star-folder", "true");
+        menuItem.removeAttribute("aria-disabled");
+        menuItem.removeAttribute("data-disabled");
         menuItem.className = refItem.className;
 
         const label = isStarred
-            ? (chrome.i18n.getMessage('bpxjkw') || 'Unstar')
-            : (chrome.i18n.getMessage('nativeMenuStarToFolder') || 'Star to Folder');
+            ? chrome.i18n.getMessage("bpxjkw") || "Unstar"
+            : chrome.i18n.getMessage("nativeMenuStarToFolder") || "Star to Folder";
 
         const iconDiv = menuItem.children[0];
         if (iconDiv) iconDiv.innerHTML = this._buildStarSvg(isStarred);
 
         const labelWrapper = menuItem.children[1];
         if (labelWrapper) {
-            const innerDiv = labelWrapper.querySelector('div');
+            const innerDiv = labelWrapper.querySelector("div");
             if (innerDiv) innerDiv.textContent = label;
         }
 
-        if (isStarred) menuItem.style.color = '#ef4444';
+        if (isStarred) menuItem.style.color = "#ef4444";
 
         const secondItem = items[1] || null;
         menu.insertBefore(menuItem, secondItem);
@@ -137,18 +170,18 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
 
     updateStarMenuItemState(menuItem, isStarred) {
         const label = isStarred
-            ? (chrome.i18n.getMessage('bpxjkw') || 'Unstar')
-            : (chrome.i18n.getMessage('nativeMenuStarToFolder') || 'Star to Folder');
+            ? chrome.i18n.getMessage("bpxjkw") || "Unstar"
+            : chrome.i18n.getMessage("nativeMenuStarToFolder") || "Star to Folder";
 
         const iconDiv = menuItem.children[0];
         if (iconDiv) iconDiv.innerHTML = this._buildStarSvg(isStarred);
 
         const labelWrapper = menuItem.children[1];
         if (labelWrapper) {
-            const innerDiv = labelWrapper.querySelector('div');
+            const innerDiv = labelWrapper.querySelector("div");
             if (innerDiv) innerDiv.textContent = label;
         }
 
-        menuItem.style.color = isStarred ? '#ef4444' : '';
+        menuItem.style.color = isStarred ? "#ef4444" : "";
     }
 }
