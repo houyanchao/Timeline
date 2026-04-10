@@ -288,10 +288,20 @@ class PromptButtonManager {
         
         try {
             const selector = this.adapter.getInputSelector();
-            const input = document.querySelector(selector);
+            const inputs = document.querySelectorAll(selector);
+            let targetInput = null;
             
-            if (input) {
-                this.inputElement = input;
+            // Find the first visible input element
+            for (const input of inputs) {
+                const rect = input.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    targetInput = input;
+                    break;
+                }
+            }
+            
+            if (targetInput) {
+                this.inputElement = targetInput;
                 this._updatePosition();
                 this._observeInputResize();
             }
