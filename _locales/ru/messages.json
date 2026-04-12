@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "OK"
-  }
+  },
+  "mirrorSiteTabName": { "message": "Зеркала сайтов" },
+  "mirrorSiteHint": { "message": "Добавьте домены зеркал AI-сайтов. На этих сайтах появится плавающая кнопка, позволяющая использовать некоторые функции этого расширения." },
+  "mirrorSiteAddDomain": { "message": "Добавить" },
+  "mirrorSiteInputPlaceholder": { "message": "Введите домен, напр. chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "Добавленные домены" },
+  "mirrorSiteNoDomains": { "message": "Домены не добавлены" },
+  "mirrorSiteDomainAdded": { "message": "Домен добавлен" },
+  "mirrorSiteDomainRemoved": { "message": "Домен удалён" },
+  "mirrorSiteDomainExists": { "message": "Домен уже существует" },
+  "mirrorSiteDomainInvalid": { "message": "Неверный формат домена" },
+  "mirrorSiteDomainIsOfficial": { "message": "Этот домен уже является официальной платформой" },
+  "mirrorSiteCopied": { "message": "Скопировано в буфер обмена" }
 }

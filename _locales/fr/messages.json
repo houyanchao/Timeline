@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "OK"
-  }
+  },
+  "mirrorSiteTabName": { "message": "Sites miroirs" },
+  "mirrorSiteHint": { "message": "Ajoutez des domaines de sites miroirs IA. Un bouton flottant apparaîtra sur ces sites, permettant d'utiliser certaines fonctionnalités de cette extension." },
+  "mirrorSiteAddDomain": { "message": "Ajouter" },
+  "mirrorSiteInputPlaceholder": { "message": "Entrez le domaine, ex. chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "Domaines ajoutés" },
+  "mirrorSiteNoDomains": { "message": "Aucun domaine ajouté" },
+  "mirrorSiteDomainAdded": { "message": "Domaine ajouté" },
+  "mirrorSiteDomainRemoved": { "message": "Domaine supprimé" },
+  "mirrorSiteDomainExists": { "message": "Le domaine existe déjà" },
+  "mirrorSiteDomainInvalid": { "message": "Format de domaine invalide" },
+  "mirrorSiteDomainIsOfficial": { "message": "Ce domaine est déjà une plateforme officielle" },
+  "mirrorSiteCopied": { "message": "Copié dans le presse-papiers" }
 }

@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "ตกลง"
-  }
+  },
+  "mirrorSiteTabName": { "message": "เว็บมิเรอร์" },
+  "mirrorSiteHint": { "message": "เพิ่มโดเมนเว็บมิเรอร์ AI จะมีปุ่มลอยปรากฏบนเว็บเหล่านี้ ช่วยให้ใช้งานฟีเจอร์บางส่วนของส่วนขยายนี้ได้" },
+  "mirrorSiteAddDomain": { "message": "เพิ่ม" },
+  "mirrorSiteInputPlaceholder": { "message": "ป้อนโดเมน เช่น chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "โดเมนที่เพิ่มแล้ว" },
+  "mirrorSiteNoDomains": { "message": "ยังไม่มีโดเมน" },
+  "mirrorSiteDomainAdded": { "message": "เพิ่มโดเมนแล้ว" },
+  "mirrorSiteDomainRemoved": { "message": "ลบโดเมนแล้ว" },
+  "mirrorSiteDomainExists": { "message": "โดเมนนี้มีอยู่แล้ว" },
+  "mirrorSiteDomainInvalid": { "message": "รูปแบบโดเมนไม่ถูกต้อง" },
+  "mirrorSiteDomainIsOfficial": { "message": "โดเมนนี้เป็นแพลตฟอร์มที่รองรับอย่างเป็นทางการแล้ว" },
+  "mirrorSiteCopied": { "message": "คัดลอกไปยังคลิปบอร์ดแล้ว" }
 }

@@ -2,7 +2,7 @@
  * Doubao (豆包) Adapter
  * 
  * Supports: doubao.com
- * Features: Uses data-testid for selection, index-based ID, extracts from message_text_content
+ * Features: Uses data-message-id + justify-end for user messages, data-plugin-identifier for text extraction
  */
 
 class DoubaoAdapter extends SiteAdapter {
@@ -15,7 +15,7 @@ class DoubaoAdapter extends SiteAdapter {
     }
 
     getUserMessageSelector() {
-        return '[data-testid="send_message"]';
+        return '[data-message-id].justify-end';
     }
 
     /**
@@ -29,8 +29,9 @@ class DoubaoAdapter extends SiteAdapter {
     _extractNodeIdFromDom(element) {
         if (!element) return null;
         
-        const messageEl = element.querySelector('[data-message-id]');
-        const nodeId = messageEl?.getAttribute('data-message-id') || null;
+        const nodeId = element.getAttribute('data-message-id')
+            || element.querySelector('[data-message-id]')?.getAttribute('data-message-id')
+            || null;
         return nodeId ? String(nodeId) : null;
     }
     
@@ -95,14 +96,13 @@ class DoubaoAdapter extends SiteAdapter {
     }
 
     extractText(element) {
-        // Extract from message_text_content element
-        const textEl = element.querySelector('[data-testid="message_text_content"]');
+        const textEl = element.querySelector('[data-plugin-identifier]') || element;
         const text = (textEl?.textContent || '').trim();
         return text || '[图片或文件]';
     }
     
     getTextContainer(element) {
-        return element.querySelector('[data-testid="message_text_content"]') || element;
+        return element.querySelector('[data-plugin-identifier]') || element;
     }
 
     isConversationRoute(pathname) {
@@ -162,7 +162,7 @@ class DoubaoAdapter extends SiteAdapter {
      */
     isAIGenerating() {
         const breakBtn = document.querySelector('[class*="break-btn-"]');
-        return !!breakBtn;
+        return !!breakBtn && !breakBtn.classList.contains('!hidden');
     }
     
     /**
@@ -177,8 +177,7 @@ class DoubaoAdapter extends SiteAdapter {
     }
     
     getStarChatButtonTarget() {
-        // 返回分享按钮，收藏按钮将插入到它前面
-        return document.querySelector('[data-testid="thread_share_btn_right_side"]');
+        return document.querySelector('button[data-trigger-type="hover"]');
     }
     
     getDefaultChatTheme() {

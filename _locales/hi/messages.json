@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "ठीक है"
-  }
+  },
+  "mirrorSiteTabName": { "message": "मिरर साइट्स" },
+  "mirrorSiteHint": { "message": "AI मिरर साइट डोमेन जोड़ें। इन साइटों पर एक फ्लोटिंग बटन दिखाई देगा, जिससे इस एक्सटेंशन की कुछ सुविधाएँ उपयोग की जा सकेंगी।" },
+  "mirrorSiteAddDomain": { "message": "जोड़ें" },
+  "mirrorSiteInputPlaceholder": { "message": "डोमेन दर्ज करें, जैसे chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "जोड़े गए डोमेन" },
+  "mirrorSiteNoDomains": { "message": "कोई डोमेन नहीं जोड़ा गया" },
+  "mirrorSiteDomainAdded": { "message": "डोमेन जोड़ा गया" },
+  "mirrorSiteDomainRemoved": { "message": "डोमेन हटाया गया" },
+  "mirrorSiteDomainExists": { "message": "डोमेन पहले से मौजूद है" },
+  "mirrorSiteDomainInvalid": { "message": "अमान्य डोमेन प्रारूप" },
+  "mirrorSiteDomainIsOfficial": { "message": "यह डोमेन पहले से एक आधिकारिक प्लेटफ़ॉर्म है" },
+  "mirrorSiteCopied": { "message": "क्लिपबोर्ड पर कॉपी किया गया" }
 }

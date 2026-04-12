@@ -77,6 +77,10 @@ class QuickAskManager {
         this._hideButton();
         this._unbindEvents();
         
+        if (this._docMouseUpHandler) {
+            document.removeEventListener('mouseup', this._docMouseUpHandler);
+            this._docMouseUpHandler = null;
+        }
         if (this.buttonElement) {
             this.buttonElement.remove();
             this.buttonElement = null;
@@ -121,12 +125,24 @@ class QuickAskManager {
         window.eventDelegateManager.on('click', '.ait-quick-ask-btn .ait-highlight-action', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (this._savedRange) {
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(this._savedRange);
+            }
             if (window.AIChatTimelineHighlight?.onHighlightAction) {
                 window.AIChatTimelineHighlight.onHighlightAction();
             }
             this._hideButton();
         });
         
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            this._btnMouseDown = true;
+        });
+        btn.addEventListener('mouseup', () => { this._btnMouseDown = false; });
+        this._docMouseUpHandler = () => { this._btnMouseDown = false; };
+        document.addEventListener('mouseup', this._docMouseUpHandler);
         document.body.appendChild(btn);
         this.buttonElement = btn;
     }
@@ -176,6 +192,7 @@ class QuickAskManager {
                 }
             },
             selectionchange: () => {
+                if (this._btnMouseDown) return;
                 const selection = window.getSelection();
                 const selectedText = selection?.toString().trim();
                 
@@ -233,6 +250,7 @@ class QuickAskManager {
         }
         
         this.currentSelection = selectedText;
+        try { this._savedRange = selection.getRangeAt(0).cloneRange(); } catch { this._savedRange = null; }
         this._showButton(selection);
     }
     
@@ -433,6 +451,7 @@ class QuickAskManager {
         this.buttonElement.classList.remove('visible');
         this.buttonElement.style.display = 'none';
         this.currentSelection = null;
+        this._savedRange = null;
     }
     
     /**
@@ -689,11 +708,16 @@ class QuickAskManager {
      * 销毁
      */
     destroy() {
+        if (this._docMouseUpHandler) {
+            document.removeEventListener('mouseup', this._docMouseUpHandler);
+            this._docMouseUpHandler = null;
+        }
         if (this.buttonElement) {
             this.buttonElement.remove();
             this.buttonElement = null;
         }
         this._adapterRegistry = null;
+        this._savedRange = null;
     }
 }
 

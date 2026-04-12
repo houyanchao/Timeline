@@ -779,5 +779,17 @@
   },
   "chatWidthConfirm": {
     "message": "OK"
-  }
+  },
+  "mirrorSiteTabName": { "message": "ミラーサイト" },
+  "mirrorSiteHint": { "message": "AIミラーサイトのドメインを追加すると、そのサイトにフローティングボタンが表示され、本拡張機能の一部の機能を利用できます。" },
+  "mirrorSiteAddDomain": { "message": "追加" },
+  "mirrorSiteInputPlaceholder": { "message": "ドメインを入力（例：chat.example.com）" },
+  "mirrorSiteDomainListTitle": { "message": "追加済みドメイン" },
+  "mirrorSiteNoDomains": { "message": "ドメインが追加されていません" },
+  "mirrorSiteDomainAdded": { "message": "ドメインを追加しました" },
+  "mirrorSiteDomainRemoved": { "message": "ドメインを削除しました" },
+  "mirrorSiteDomainExists": { "message": "このドメインは既に存在します" },
+  "mirrorSiteDomainInvalid": { "message": "ドメイン形式が無効です" },
+  "mirrorSiteDomainIsOfficial": { "message": "このドメインは公式対応プラットフォームです" },
+  "mirrorSiteCopied": { "message": "クリップボードにコピーしました" }
 }

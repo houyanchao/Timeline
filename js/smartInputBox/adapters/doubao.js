@@ -14,10 +14,10 @@ class DoubaoSmartEnterAdapter extends BaseSmartEnterAdapter {
     
     /**
      * 获取输入框选择器
-     * 豆包使用 textarea，data-testid="chat_input_input"
+     * 豆包使用 textarea.semi-input-textarea
      */
     getInputSelector() {
-        return 'textarea[data-testid="chat_input_input"]';
+        return 'textarea.semi-input-textarea';
     }
 
     /**

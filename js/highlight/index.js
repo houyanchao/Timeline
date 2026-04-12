@@ -38,6 +38,8 @@
 
     let manager = null;
     let standaloneBtn = null;
+    let _hlBtnMouseDown = false;
+    let _hlDocMouseUpHandler = null;
     let popoverEl = null;
     let savedRange = null;
     let editingHlId = null;
@@ -484,6 +486,13 @@
             e.preventDefault();
         });
 
+        standaloneBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            _hlBtnMouseDown = true;
+        });
+        standaloneBtn.addEventListener('mouseup', () => { _hlBtnMouseDown = false; });
+        _hlDocMouseUpHandler = () => { _hlBtnMouseDown = false; };
+        document.addEventListener('mouseup', _hlDocMouseUpHandler);
         document.body.appendChild(standaloneBtn);
     }
 
@@ -554,6 +563,7 @@
                 if (e.shiftKey) setTimeout(() => checkSelection(), 10);
             },
             selectionchange: () => {
+                if (_hlBtnMouseDown) return;
                 const sel = window.getSelection();
                 if (!sel?.toString().trim()) {
                     if (!popoverEl || popoverEl.style.display === 'none') {
@@ -579,6 +589,11 @@
         document.removeEventListener('selectionchange', boundHandlers.selectionchange);
         window.removeEventListener('scroll', boundHandlers.scroll, { capture: true });
         boundHandlers = null;
+        if (_hlDocMouseUpHandler) {
+            document.removeEventListener('mouseup', _hlDocMouseUpHandler);
+            _hlDocMouseUpHandler = null;
+        }
+        _hlBtnMouseDown = false;
     }
 
     function checkSelection() {

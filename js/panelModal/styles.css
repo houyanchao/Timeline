@@ -77,6 +77,17 @@
     margin: 0 !important;
     padding: 0 !important;
     float: none !important;
+    /* 防止宿主页面 CSS 穿透（text-align 等继承属性） */
+    text-align: left !important;
+    line-height: normal !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-transform: none !important;
+    text-indent: 0 !important;
+    direction: ltr !important;
+    font-style: normal !important;
+    white-space: normal !important;
+    text-decoration: none !important;
 }
 
 /* ========== 左侧边栏 ========== */
@@ -399,6 +410,12 @@
     z-index: 1;
     transform: scale(0.95);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: left !important;
+    line-height: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    text-indent: 0 !important;
+    direction: ltr !important;
 }
 
 .feedback-modal.visible .feedback-modal-content {

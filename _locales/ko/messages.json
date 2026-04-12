@@ -779,5 +779,17 @@
   },
   "chatWidthConfirm": {
     "message": "확인"
-  }
+  },
+  "mirrorSiteTabName": { "message": "미러 사이트" },
+  "mirrorSiteHint": { "message": "AI 미러 사이트 도메인을 추가하면 해당 사이트에 플로팅 버튼이 표시되어 이 확장 프로그램의 일부 기능을 사용할 수 있습니다." },
+  "mirrorSiteAddDomain": { "message": "추가" },
+  "mirrorSiteInputPlaceholder": { "message": "도메인 입력 (예: chat.example.com)" },
+  "mirrorSiteDomainListTitle": { "message": "추가된 도메인" },
+  "mirrorSiteNoDomains": { "message": "추가된 도메인이 없습니다" },
+  "mirrorSiteDomainAdded": { "message": "도메인이 추가되었습니다" },
+  "mirrorSiteDomainRemoved": { "message": "도메인이 삭제되었습니다" },
+  "mirrorSiteDomainExists": { "message": "도메인이 이미 존재합니다" },
+  "mirrorSiteDomainInvalid": { "message": "잘못된 도메인 형식입니다" },
+  "mirrorSiteDomainIsOfficial": { "message": "이 도메인은 이미 공식 지원 플랫폼입니다" },
+  "mirrorSiteCopied": { "message": "클립보드에 복사되었습니다" }
 }

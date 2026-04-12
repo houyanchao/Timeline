@@ -202,8 +202,24 @@ function isSupportedSite(url) {
     } catch { return false; }
 }
 
+async function isMirrorSiteBg(url) {
+    try {
+        const result = await chrome.storage.local.get('mirrorSiteDomains');
+        const domains = result.mirrorSiteDomains || [];
+        if (domains.length === 0) return false;
+        const hostname = new URL(url).hostname;
+        return domains.some(d => hostname === d || hostname.endsWith('.' + d));
+    } catch { return false; }
+}
+
 chrome.action.onClicked.addListener(async (tab) => {
     if (tab.url && isSupportedSite(tab.url)) {
+        try {
+            await chrome.tabs.sendMessage(tab.id, { type: 'OPEN_PANEL_MODAL' });
+        } catch {
+            chrome.tabs.create({ url: chrome.runtime.getURL('popup/guide.html') });
+        }
+    } else if (tab.url && await isMirrorSiteBg(tab.url)) {
         try {
             await chrome.tabs.sendMessage(tab.id, { type: 'OPEN_PANEL_MODAL' });
         } catch {

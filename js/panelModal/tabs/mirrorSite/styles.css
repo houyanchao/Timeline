@@ -1,0 +1,214 @@
+/**
+ * Mirror Site Tab Styles
+ */
+
+.mirror-site-settings {
+    padding: 0;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.mirror-site-hint {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+/* 添加行 */
+.mirror-site-add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.mirror-site-input {
+    flex: 1;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #1f2937;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.mirror-site-input:focus {
+    background: #fff;
+    border-color: #000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.mirror-site-input::placeholder {
+    color: #9ca3af;
+}
+
+.mirror-site-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 14px;
+    height: 36px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.mirror-site-add-btn:hover {
+    background: #333;
+}
+
+.mirror-site-add-btn:active {
+    transform: scale(0.98);
+}
+
+.mirror-site-add-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* 列表区域 */
+.mirror-site-list-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mirror-site-list-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.mirror-site-list {
+    flex: 1;
+    overflow-y: auto;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.mirror-site-list::-webkit-scrollbar {
+    width: 6px;
+}
+.mirror-site-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.mirror-site-list::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+/* 域名项 */
+.mirror-site-domain-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: #fff;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.mirror-site-domain-item:last-child {
+    margin-bottom: 0;
+}
+
+.mirror-site-domain-item:hover {
+    border-color: #eef0f2;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.mirror-site-domain-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+}
+
+.mirror-site-domain-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #9ca3af;
+}
+
+.mirror-site-domain-text {
+    font-size: 14px;
+    color: #1f2937;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mirror-site-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    opacity: 0;
+    flex-shrink: 0;
+}
+
+.mirror-site-domain-item:hover .mirror-site-remove-btn {
+    opacity: 1;
+}
+
+.mirror-site-remove-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.mirror-site-remove-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* 空状态 */
+.mirror-site-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: #9ca3af;
+}
+
+.mirror-site-empty svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+    opacity: 0.4;
+}
+
+.mirror-site-empty span {
+    font-size: 13px;
+}

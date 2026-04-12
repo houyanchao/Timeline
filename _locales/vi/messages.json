@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "OK"
-  }
+  },
+  "mirrorSiteTabName": { "message": "Trang mirror" },
+  "mirrorSiteHint": { "message": "Thêm tên miền trang mirror AI. Nút nổi sẽ xuất hiện trên các trang này, cho phép sử dụng một số tính năng của tiện ích mở rộng." },
+  "mirrorSiteAddDomain": { "message": "Thêm" },
+  "mirrorSiteInputPlaceholder": { "message": "Nhập tên miền, vd: chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "Tên miền đã thêm" },
+  "mirrorSiteNoDomains": { "message": "Chưa có tên miền nào" },
+  "mirrorSiteDomainAdded": { "message": "Đã thêm tên miền" },
+  "mirrorSiteDomainRemoved": { "message": "Đã xóa tên miền" },
+  "mirrorSiteDomainExists": { "message": "Tên miền đã tồn tại" },
+  "mirrorSiteDomainInvalid": { "message": "Định dạng tên miền không hợp lệ" },
+  "mirrorSiteDomainIsOfficial": { "message": "Tên miền này đã là nền tảng chính thức" },
+  "mirrorSiteCopied": { "message": "Đã sao chép vào clipboard" }
 }

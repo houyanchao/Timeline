@@ -399,121 +399,41 @@ class PromptButtonManager {
     }
     
     /**
-     * 显示提示词下拉菜单（自定义分区结构）
+     * 显示提示词下拉菜单（委托给共享 prompt-dropdown-ui）
      */
     _showPromptDropdown() {
-        // 先关闭其他 dropdown
         if (window.globalDropdownManager) {
             window.globalDropdownManager.hide(true);
         }
         
-        // 创建遮罩层
         this._promptOverlay = document.createElement('div');
         this._promptOverlay.className = 'prompt-dropdown-overlay';
         this._promptOverlay.addEventListener('click', () => this._hidePromptDropdown());
         document.body.appendChild(this._promptOverlay);
         
-        // 创建下拉菜单容器
-        this._promptDropdown = document.createElement('div');
-        this._promptDropdown.className = 'prompt-dropdown-container';
-        
-        // ============ Header 区域（固定，标题 + 操作icon） ============
-        const header = document.createElement('div');
-        header.className = 'prompt-dropdown-header';
-        header.innerHTML = `
-            <div class="prompt-dropdown-title-wrapper">
-                <svg class="prompt-dropdown-title-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
-                <span class="prompt-dropdown-title">${chrome.i18n.getMessage('hosegod')}</span>
-            </div>
-            <button class="prompt-dropdown-action-btn">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:14px!important;height:14px!important">
-                    <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-        `;
-        
-        // 绑定按钮点击事件
-        const actionBtn = header.querySelector('.prompt-dropdown-action-btn');
-        actionBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this._hidePromptDropdown();
-            if (window.panelModal) {
-                window.panelModal.show('prompt');
-            }
-        });
-        
-        this._promptDropdown.appendChild(header);
-        
-        // 获取当前平台筛选提示词
         const currentPlatform = typeof getCurrentPlatform === 'function' ? getCurrentPlatform() : null;
         const currentPlatformId = currentPlatform?.id || '';
         const filteredPrompts = this.prompts.filter(p => !p.platformId || p.platformId === currentPlatformId);
         
-        // 排序：置顶的在前面
-        const sortedPrompts = [...filteredPrompts].sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;
-            if (!a.pinned && b.pinned) return 1;
-            return 0;
+        this._promptDropdown = createPromptDropdownUI({
+            prompts: filteredPrompts,
+            onItemClick: (prompt) => {
+                this._hidePromptDropdown();
+                this._insertPrompt(prompt);
+            },
+            onManageClick: () => {
+                this._hidePromptDropdown();
+                if (window.panelModal) window.panelModal.show('prompt');
+            }
         });
         
-        // ============ 搜索区域（超过2条时显示） ============
-        if (sortedPrompts.length >= 5) {
-            const searchWrap = document.createElement('div');
-            searchWrap.className = 'prompt-dropdown-search';
-            const searchInput = document.createElement('input');
-            searchInput.type = 'text';
-            searchInput.className = 'prompt-dropdown-search-input';
-            searchInput.placeholder = chrome.i18n.getMessage('searchPrompt') || '搜索提示词...';
-            searchInput.autocomplete = 'off';
-            searchInput.addEventListener('input', () => {
-                this._filterPromptItems(searchInput.value.trim().toLowerCase());
-            });
-            searchWrap.appendChild(searchInput);
-            this._promptDropdown.appendChild(searchWrap);
-        }
-        
-        // ============ Body 区域（可滚动） ============
-        const body = document.createElement('div');
-        body.className = 'prompt-dropdown-body';
-        
-        if (sortedPrompts.length > 0) {
-            sortedPrompts.forEach(prompt => {
-                const item = this._createPromptItem(prompt);
-                body.appendChild(item);
-            });
-        } else {
-            const emptyItem = document.createElement('div');
-            emptyItem.className = 'prompt-dropdown-empty';
-            emptyItem.innerHTML = `
-                <div class="prompt-dropdown-empty-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                </div>
-                <span class="prompt-dropdown-empty-text">${chrome.i18n.getMessage('hsiwhwl')}</span>
-            `;
-            body.appendChild(emptyItem);
-        }
-        
-        this._promptDropdown.appendChild(body);
-        
-        // 添加到 body
         document.body.appendChild(this._promptDropdown);
-        
-        // 计算位置（往上展开，顶部至少 20px，底部不超过按钮上方）
         this._positionPromptDropdown();
         
-        // 显示动画
         requestAnimationFrame(() => {
             this._promptDropdown.classList.add('visible');
         });
         
-        // 监听点击外部关闭
         this._boundCloseOnClickOutside = (e) => {
             if (!this._promptDropdown?.contains(e.target) && e.target !== this.buttonElement) {
                 this._hidePromptDropdown();
@@ -522,124 +442,6 @@ class PromptButtonManager {
         setTimeout(() => {
             document.addEventListener('click', this._boundCloseOnClickOutside, true);
         }, 0);
-    }
-    
-    /**
-     * 创建提示词项
-     */
-    _createPromptItem(prompt) {
-        const item = document.createElement('div');
-        item.className = 'prompt-dropdown-item';
-        
-        // 名称
-        const promptName = prompt.name || '';
-        
-        // 截取内容前50个字符
-        const displayText = prompt.content ? 
-            (prompt.content.length > 50 ? prompt.content.substring(0, 50) + '...' : prompt.content) 
-            : '';
-        
-        // 置顶图标
-        const iconHtml = prompt.pinned ? `
-            <span class="prompt-dropdown-item-icon pinned-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2.5">
-                    <line x1="5" y1="3" x2="19" y2="3"/>
-                    <line x1="12" y1="7" x2="12" y2="21"/>
-                    <polyline points="8 11 12 7 16 11"/>
-                </svg>
-            </span>
-        ` : '';
-        
-        item.innerHTML = `
-            <div class="prompt-dropdown-item-main">
-                ${iconHtml}<span class="prompt-dropdown-item-name">${this._escapeHtml(promptName)}</span>
-            </div>
-            <div class="prompt-dropdown-item-content">${this._escapeHtml(displayText)}</div>
-        `;
-        
-        item.addEventListener('click', () => {
-            this._hidePromptDropdown();
-            this._insertPrompt(prompt);
-        });
-        
-        // Tooltip 显示完整内容
-        const tooltipId = `prompt-item-${prompt.id}`;
-        item.addEventListener('mouseenter', () => {
-            if (window.globalTooltipManager && prompt.content) {
-                window.globalTooltipManager.show(
-                    tooltipId,
-                    'button',
-                    item,
-                    prompt.content,
-                    {
-                        placement: 'right',
-                        maxWidth: 300,
-                        showDelay: 300,
-                        gap: 14,  // 默认12，增加2px
-                        color: {
-                            light: {
-                                backgroundColor: '#0d0d0d',  // 浅色模式：黑色背景
-                                textColor: '#ffffff',        // 浅色模式：白色文字
-                                borderColor: '#0d0d0d'       // 浅色模式：黑色边框
-                            },
-                            dark: {
-                                backgroundColor: '#ffffff',  // 深色模式：白色背景
-                                textColor: '#1f2937',        // 深色模式：深灰色文字
-                                borderColor: '#e5e7eb'       // 深色模式：浅灰色边框
-                            }
-                        }
-                    }
-                );
-            }
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            if (window.globalTooltipManager) {
-                window.globalTooltipManager.hide();
-            }
-        });
-        
-        return item;
-    }
-    
-    /**
-     * 搜索过滤提示词列表
-     */
-    _filterPromptItems(query) {
-        if (!this._promptDropdown) return;
-        const body = this._promptDropdown.querySelector('.prompt-dropdown-body');
-        if (!body) return;
-        const items = body.querySelectorAll('.prompt-dropdown-item');
-        let visibleCount = 0;
-        items.forEach(item => {
-            const name = item.querySelector('.prompt-dropdown-item-name')?.textContent || '';
-            const content = item.querySelector('.prompt-dropdown-item-content')?.textContent || '';
-            const match = !query || name.toLowerCase().includes(query) || content.toLowerCase().includes(query);
-            item.style.display = match ? '' : 'none';
-            if (match) visibleCount++;
-        });
-        let emptyTip = body.querySelector('.prompt-dropdown-search-empty');
-        if (visibleCount === 0 && query) {
-            if (!emptyTip) {
-                emptyTip = document.createElement('div');
-                emptyTip.className = 'prompt-dropdown-search-empty';
-                emptyTip.textContent = chrome.i18n.getMessage('jwvnkp') || 'No results';
-                body.appendChild(emptyTip);
-            }
-            emptyTip.style.display = '';
-        } else if (emptyTip) {
-            emptyTip.style.display = 'none';
-        }
-    }
-    
-    /**
-     * HTML 转义
-     */
-    _escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
     
     /**

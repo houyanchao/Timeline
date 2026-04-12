@@ -785,5 +785,17 @@
   },
   "chatWidthConfirm": {
     "message": "確定"
-  }
+  },
+  "mirrorSiteTabName": { "message": "鏡像站點" },
+  "mirrorSiteHint": { "message": "添加 AI 鏡像站域名後，在這些網站上會出現浮窗按鈕，可使用本插件的部分功能。" },
+  "mirrorSiteAddDomain": { "message": "添加" },
+  "mirrorSiteInputPlaceholder": { "message": "輸入域名，如 chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "已添加的域名" },
+  "mirrorSiteNoDomains": { "message": "尚未添加任何域名" },
+  "mirrorSiteDomainAdded": { "message": "域名已添加" },
+  "mirrorSiteDomainRemoved": { "message": "域名已移除" },
+  "mirrorSiteDomainExists": { "message": "域名已存在" },
+  "mirrorSiteDomainInvalid": { "message": "域名格式無效" },
+  "mirrorSiteDomainIsOfficial": { "message": "該域名已是官方適配平台，無需添加" },
+  "mirrorSiteCopied": { "message": "已複製到剪貼簿" }
 }

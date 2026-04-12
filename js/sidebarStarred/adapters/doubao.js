@@ -4,9 +4,9 @@
  * 豆包侧边栏 DOM 结构：
  *   [data-history-container="true"] = 聊天历史列表容器
  *   收藏区域插在其上方
- *   会话链接：a[data-testid="chat_list_thread_item"] href="/chat/xxx"
- *   标题：[data-testid="chat_list_item_title"]
- *   三个点按钮区域：[data-testid^="chat_list_item_setting_more_"]
+ *   会话链接：a[id^="conversation_"] href="/chat/xxx"
+ *   标题：span[class*="overallTitle-"]
+ *   三个点按钮区域：[class*="feed-list-item-tool-button"]
  *   菜单：Radix UI dropdown（[data-radix-popper-content-wrapper]）
  */
 
@@ -48,7 +48,7 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
     // ==================== 侧边栏收藏标记 ====================
 
     getConversationElements() {
-        return document.querySelectorAll('a[data-testid="chat_list_thread_item"]');
+        return document.querySelectorAll('a[id^="conversation_"]');
     }
 
     getConversationUrlPath(convEl) {
@@ -56,7 +56,7 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
     }
 
     injectStarIcon(convEl) {
-        const titleEl = convEl.querySelector('[data-testid="chat_list_item_title"]');
+        const titleEl = convEl.querySelector('span[class*="overallTitle-"]');
         if (!titleEl || titleEl.querySelector(`[${BaseSidebarStarredAdapter.STAR_ICON_ATTR}]`)) return;
 
         const icon = document.createElement('span');
@@ -74,13 +74,13 @@ class DoubaoSidebarStarredAdapter extends BaseSidebarStarredAdapter {
     // ==================== 原生菜单注入 ====================
 
     getClickDelegateSelector() {
-        return '[data-testid^="chat_list_item_setting_more_"]';
+        return '[class*="feed-list-item-tool-button"]';
     }
 
     getConversationFromClickTarget(el) {
-        const convLink = el.closest('a[data-testid="chat_list_thread_item"]');
+        const convLink = el.closest('a[id^="conversation_"]');
         if (!convLink) return null;
-        const titleEl = convLink.querySelector('[data-testid="chat_list_item_title"]');
+        const titleEl = convLink.querySelector('span[class*="overallTitle-"]');
         return {
             url: convLink.href,
             title: titleEl?.textContent?.trim() || ''

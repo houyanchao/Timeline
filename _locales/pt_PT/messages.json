@@ -728,5 +728,17 @@
   },
   "chatWidthConfirm": {
     "message": "OK"
-  }
+  },
+  "mirrorSiteTabName": { "message": "Sites espelho" },
+  "mirrorSiteHint": { "message": "Adicione domínios de sites espelho de IA. Um botão flutuante aparecerá nestes sites, permitindo usar algumas funcionalidades desta extensão." },
+  "mirrorSiteAddDomain": { "message": "Adicionar" },
+  "mirrorSiteInputPlaceholder": { "message": "Insira o domínio, ex. chat.example.com" },
+  "mirrorSiteDomainListTitle": { "message": "Domínios adicionados" },
+  "mirrorSiteNoDomains": { "message": "Nenhum domínio adicionado" },
+  "mirrorSiteDomainAdded": { "message": "Domínio adicionado" },
+  "mirrorSiteDomainRemoved": { "message": "Domínio removido" },
+  "mirrorSiteDomainExists": { "message": "O domínio já existe" },
+  "mirrorSiteDomainInvalid": { "message": "Formato de domínio inválido" },
+  "mirrorSiteDomainIsOfficial": { "message": "Este domínio já é uma plataforma oficial" },
+  "mirrorSiteCopied": { "message": "Copiado para a área de transferência" }
 }

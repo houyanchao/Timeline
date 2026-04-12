@@ -20,6 +20,7 @@ function getTabClass(name) {
         case 'AboutTab': return typeof AboutTab !== 'undefined' ? AboutTab : null;
         case 'HighlightTab': return typeof HighlightTab !== 'undefined' ? HighlightTab : null;
         case 'ChatWidthTab': return typeof ChatWidthTab !== 'undefined' ? ChatWidthTab : null;
+        case 'MirrorSiteTab': return typeof MirrorSiteTab !== 'undefined' ? MirrorSiteTab : null;
         default: return null;
     }
 }
@@ -40,7 +41,8 @@ const TAB_CONFIG = [
     { id: 'highlight', className: 'HighlightTab' },
     { id: 'chat-width', className: 'ChatWidthTab' },
     { id: 'animation', className: 'AnimationTab' },
-    { id: 'data-sync', className: 'DataSyncTab' }
+    { id: 'data-sync', className: 'DataSyncTab' },
+    { id: 'mirror-site', className: 'MirrorSiteTab' }
 ];
 
 /**
