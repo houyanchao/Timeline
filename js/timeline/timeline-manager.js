@@ -3119,14 +3119,14 @@ class TimelineManager {
         };
         
         try {
-            console.log('[Timeline] 📢 timeline:activeChange detail:', {
-                currentIndex,
-                previousIndex,
-                totalCount,
-                isFirst,
-                isLast,
-                direction
-            });
+            // console.log('[Timeline] 📢 timeline:activeChange detail:', {
+            //     currentIndex,
+            //     previousIndex,
+            //     totalCount,
+            //     isFirst,
+            //     isLast,
+            //     direction
+            // });
             window.dispatchEvent(new CustomEvent('timeline:activeChange', {
                 detail: {
                     currentIndex,       // 当前选中节点索引（0-based）
