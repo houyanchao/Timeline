@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Timeline：AI 对话增强插件"
+    "message": "Timeline：增强 AI 对话体验"
   },
   "extDescription": {
-    "message": "让 AI 对话体验翻倍。对话时间轴、文件夹、复制 LaTeX 公式、闪记、自定义提示词库等超多提效功能。"
+    "message": "支持所有主流 AI 平台，集成对话时间轴、提示词、文本高亮、闪记等众多功能。"
   },
   "qwxpzm": {
     "message": "收藏"

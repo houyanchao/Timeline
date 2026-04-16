@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Timeline: Wtyczka do czatu AI"
+    "message": "Timeline: Ulepsz doświadczenie czatu AI"
   },
   "extDescription": {
-    "message": "Podwój swoje doświadczenie czatu z AI. Oś czasu czatu, foldery, kopiowanie formuł LaTeX, szybkie notatki, biblioteka promptów i wiele więcej."
+    "message": "Obsługuje wszystkie popularne platformy AI. Zintegrowany z osią czasu czatu, promptami, podświetlaniem tekstu, szybkimi notatkami i wieloma innymi funkcjami."
   },
   "qwxpzm": {
     "message": "Ulubione"

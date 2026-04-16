@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Timeline: Plugin nâng cao trò chuyện AI"
+    "message": "Timeline: Nâng cao trải nghiệm trò chuyện AI"
   },
   "extDescription": {
-    "message": "Nhân đôi trải nghiệm chat AI. Timeline trò chuyện, thư mục, sao chép công thức LaTeX, ghi chú nhanh, thư viện prompt và nhiều tính năng khác."
+    "message": "Hỗ trợ tất cả các nền tảng AI phổ biến. Tích hợp timeline trò chuyện, prompt, đánh dấu văn bản, ghi chú nhanh và nhiều tính năng khác."
   },
   "qwxpzm": {
     "message": "Yêu thích"

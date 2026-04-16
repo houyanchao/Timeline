@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Timeline: AI 대화 향상 플러그인"
+    "message": "Timeline: AI 대화 경험 향상"
   },
   "extDescription": {
-    "message": "AI 대화 경험을 두 배로. 대화 타임라인, 폴더, LaTeX 수식 복사, 빠른 메모, 맞춤 프롬프트 등 다양한 생산성 기능."
+    "message": "모든 주요 AI 플랫폼을 지원합니다. 대화 타임라인, 프롬프트, 텍스트 하이라이트, 빠른 메모 등 다양한 기능을 제공합니다."
   },
   "qwxpzm": {
     "message": "즐겨찾기"
