@@ -1,13 +1,25 @@
 /* 蜗牛爬行队列 */
-.ait-snail-parade { position: fixed; z-index: 8; height: 40px; overflow: visible; pointer-events: none; -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); }
+.ait-snail-parade { position: fixed; z-index: 8; height: 40px; overflow: visible; pointer-events: none; visibility: hidden; opacity: 0; transition: opacity 0.25s ease, visibility 0.25s, top 0.15s ease-out; -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); }
+.ait-snail-parade.ait-pet-visible { visibility: visible; opacity: 1; }
 .snail-parade-track { width: 100%; height: 100%; position: relative; }
-.snail-parade-group { display: flex; align-items: flex-end; gap: 0; position: absolute; bottom: 0; pointer-events: auto; cursor: pointer; animation: snail-march 60s linear 1 forwards; }
+.snail-parade-group { display: flex; align-items: flex-end; gap: 0; position: absolute; bottom: 0; pointer-events: auto; cursor: pointer; will-change: transform; transition: opacity 0.35s ease; animation: snail-march 60s linear infinite; }
 .snail-parade-group:hover, .snail-parade-group:hover * { animation-play-state: paused !important; }
 .snail-item { display: inline-flex; flex-shrink: 0; }
+.snail-item svg { display: block; overflow: visible; }
 .snail-bob-1 { animation: snail-bob 2s ease-in-out infinite; }
 .snail-bob-2 { animation: snail-bob 2s ease-in-out infinite 0.4s; }
 .snail-bob-3 { animation: snail-bob 2s ease-in-out infinite 0.8s; }
 @keyframes snail-march { 0% { transform: translateX(-100%); } 100% { transform: translateX(calc(var(--pw, 600px) + 10px)); } }
 @keyframes snail-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
 
+/* 眼柄以根部为轴缓慢摆动（transform-origin 使用 viewBox 用户坐标） */
+.snail-eye-l, .snail-eye-r { animation: snail-eye-sway 2.4s ease-in-out infinite; }
+.snail-eye-l { transform-origin: 41px 19px; }
+.snail-eye-r { transform-origin: 47px 19px; animation-delay: 0.5s; }
+@keyframes snail-eye-sway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+
 .anim-paused * { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ait-snail-parade * { animation-play-state: paused !important; }
+}

@@ -34,7 +34,6 @@ class AntAnimation {
         items += `<span class="ant-item ant-bob-${(n % 3) + 1} ant-leader">${this._antSvg(this._leaderSize, '#3A2718')}</span>`;
         const el = document.createElement('div');
         el.className = 'ait-ant-parade';
-        el.style.display = 'none';
         el.innerHTML = `<div class="ant-track"><div class="ant-group">${items}</div></div>`;
         document.body.appendChild(el);
         this._el = el;
@@ -59,9 +58,9 @@ class AntAnimation {
         s.width = `${referenceRect.width}px`;
         s.top = `${referenceRect.top - 26}px`;
         s.setProperty('--pw', `${referenceRect.width}px`);
-        s.display = 'block';
+        if (!this._el.classList.contains('ait-pet-visible')) this._el.classList.add('ait-pet-visible');
     }
 
-    hide() { if (this._el) this._el.style.display = 'none'; }
+    hide() { if (this._el?.classList.contains('ait-pet-visible')) this._el.classList.remove('ait-pet-visible'); }
     destroy() { if (this._el?.parentNode) { this._el.parentNode.removeChild(this._el); this._el = null; } }
 }

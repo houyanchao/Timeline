@@ -1,9 +1,12 @@
 /* 僵尸行走队列 */
-.ait-zombie-parade { position: fixed; z-index: 8; height: 42px; overflow: visible; pointer-events: none; -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); }
+.ait-zombie-parade { position: fixed; z-index: 8; height: 42px; overflow: visible; pointer-events: none; visibility: hidden; opacity: 0; transition: opacity 0.25s ease, visibility 0.25s, top 0.15s ease-out; -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); }
+.ait-zombie-parade.ait-pet-visible { visibility: visible; opacity: 1; }
 .zombie-track { width: 100%; height: 100%; position: relative; }
-.zombie-group { display: flex; align-items: flex-end; gap: 8px; position: absolute; bottom: 0; pointer-events: auto; cursor: pointer; animation: z-march 50s linear 1 forwards; }
+.zombie-group { display: flex; align-items: flex-end; gap: 8px; position: absolute; bottom: 0; pointer-events: auto; cursor: pointer; will-change: transform; transition: opacity 0.35s ease; animation: z-march 50s linear infinite; }
 .zombie-group:hover, .zombie-group:hover * { animation-play-state: paused !important; }
-.zombie-item { display: inline-flex; flex-shrink: 0; }
+/* 以脚底为轴摇晃，像真正的踉跄而不是绕中心旋转 */
+.zombie-item { display: inline-flex; flex-shrink: 0; transform-origin: 50% 100%; }
+.zombie-item svg { display: block; overflow: visible; }
 
 .z-bob-1 { animation: z-lurch-1 1.4s ease-in-out infinite; }
 .z-bob-2 { animation: z-lurch-2 1.8s ease-in-out infinite 0.3s; }
@@ -31,23 +34,31 @@
     80% { transform: rotate(1deg); }
 }
 
-.z-arm-front { animation: z-arm-f 1.6s ease-in-out infinite; transform-origin: left center; }
-@keyframes z-arm-f { 0%, 100% { transform: rotate(0deg); } 40% { transform: rotate(-5deg); } 80% { transform: rotate(3deg); } }
+/* 手臂以肩关节为轴（transform-origin 使用 viewBox 用户坐标） */
+.z-arm-front { animation: z-arm-f 1.6s ease-in-out infinite; transform-origin: 20px 21px; }
+@keyframes z-arm-f { 0%, 100% { transform: rotate(0deg); } 40% { transform: rotate(-8deg); } 80% { transform: rotate(4deg); } }
 
-.z-arm-back { animation: z-arm-b 1.6s ease-in-out infinite; transform-origin: right center; }
-@keyframes z-arm-b { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
+.z-arm-back { animation: z-arm-b 1.6s ease-in-out infinite; transform-origin: 8px 22px; }
+@keyframes z-arm-b { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(8deg); } }
 
-.z-bob-1 .z-leg-l { animation: z-drag-l 1.4s ease-in-out infinite; transform-origin: top center; }
-.z-bob-1 .z-leg-r { animation: z-drag-r 1.4s ease-in-out infinite; transform-origin: top center; }
-.z-bob-2 .z-leg-l { animation: z-drag-l 1.8s ease-in-out infinite 0.2s; transform-origin: top center; }
-.z-bob-2 .z-leg-r { animation: z-drag-r 1.8s ease-in-out infinite 0.2s; transform-origin: top center; }
-.z-bob-3 .z-leg-l { animation: z-drag-l 1.6s ease-in-out infinite 0.5s; transform-origin: top center; }
-.z-bob-3 .z-leg-r { animation: z-drag-r 1.6s ease-in-out infinite 0.5s; transform-origin: top center; }
-.z-bob-4 .z-leg-l { animation: z-drag-l 2.0s ease-in-out infinite 0.3s; transform-origin: top center; }
-.z-bob-4 .z-leg-r { animation: z-drag-r 2.0s ease-in-out infinite 0.3s; transform-origin: top center; }
-.z-bob-5 .z-leg-l { animation: z-drag-l 1.5s ease-in-out infinite 0.8s; transform-origin: top center; }
-.z-bob-5 .z-leg-r { animation: z-drag-r 1.5s ease-in-out infinite 0.8s; transform-origin: top center; }
-@keyframes z-drag-l { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-@keyframes z-drag-r { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } }
+/* 腿以髋关节为轴拖行 */
+.z-leg-l { transform-origin: 9.75px 32px; }
+.z-leg-r { transform-origin: 17.25px 32px; }
+.z-bob-1 .z-leg-l { animation: z-drag-l 1.4s ease-in-out infinite; }
+.z-bob-1 .z-leg-r { animation: z-drag-r 1.4s ease-in-out infinite; }
+.z-bob-2 .z-leg-l { animation: z-drag-l 1.8s ease-in-out infinite 0.2s; }
+.z-bob-2 .z-leg-r { animation: z-drag-r 1.8s ease-in-out infinite 0.2s; }
+.z-bob-3 .z-leg-l { animation: z-drag-l 1.6s ease-in-out infinite 0.5s; }
+.z-bob-3 .z-leg-r { animation: z-drag-r 1.6s ease-in-out infinite 0.5s; }
+.z-bob-4 .z-leg-l { animation: z-drag-l 2.0s ease-in-out infinite 0.3s; }
+.z-bob-4 .z-leg-r { animation: z-drag-r 2.0s ease-in-out infinite 0.3s; }
+.z-bob-5 .z-leg-l { animation: z-drag-l 1.5s ease-in-out infinite 0.8s; }
+.z-bob-5 .z-leg-r { animation: z-drag-r 1.5s ease-in-out infinite 0.8s; }
+@keyframes z-drag-l { 0%,100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+@keyframes z-drag-r { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
 
 .anim-paused * { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ait-zombie-parade * { animation-play-state: paused !important; }
+}

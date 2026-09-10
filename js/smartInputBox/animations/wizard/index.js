@@ -65,7 +65,6 @@ class WizardAnimation {
         items += `<span class="wizard-item wizard-float wizard-leader">${this._wizardSvg(this._leaderSize, 0)}</span>`;
         const el = document.createElement('div');
         el.className = 'ait-wizard-parade';
-        el.style.display = 'none';
         el.innerHTML = `<div class="wizard-track"><div class="wizard-group">${items}</div></div>`;
         document.body.appendChild(el);
         this._el = el;
@@ -90,9 +89,9 @@ class WizardAnimation {
         s.width = `${referenceRect.width}px`;
         s.top = `${referenceRect.top - 48}px`;
         s.setProperty('--pw', `${referenceRect.width}px`);
-        s.display = 'block';
+        if (!this._el.classList.contains('ait-pet-visible')) this._el.classList.add('ait-pet-visible');
     }
 
-    hide() { if (this._el) this._el.style.display = 'none'; }
+    hide() { if (this._el?.classList.contains('ait-pet-visible')) this._el.classList.remove('ait-pet-visible'); }
     destroy() { if (this._el?.parentNode) { this._el.parentNode.removeChild(this._el); this._el = null; } }
 }

@@ -492,7 +492,14 @@ class PromptButtonManager {
 
             if (window.inputBoxAnimationManager) {
                 const ref = this.adapter.getPositionReferenceElement?.(this.inputElement) || this.inputElement;
-                window.inputBoxAnimationManager.updatePosition(ref.getBoundingClientRect());
+                const refRect = ref.getBoundingClientRect();
+                const animOffset = this.adapter.getAnimationOffset?.() || { top: 0, left: 0 };
+                window.inputBoxAnimationManager.updatePosition({
+                    left: refRect.left + (animOffset.left || 0),
+                    top: refRect.top + (animOffset.top || 0),
+                    width: refRect.width,
+                    height: refRect.height
+                });
             }
         } catch (e) {
             this._hideButton();

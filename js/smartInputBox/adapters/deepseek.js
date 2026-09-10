@@ -35,5 +35,12 @@ class DeepSeekSmartEnterAdapter extends BaseSmartEnterAdapter {
     getPromptButtonOffset() {
         return { top: 10, left: -2 };
     }
+
+    /**
+     * 电子宠物位置偏移：DeepSeek 输入框容器上边缘偏低，宠物整体上移 5px
+     */
+    getAnimationOffset() {
+        return { top: -5, left: 0 };
+    }
 }
 

@@ -68,4 +68,13 @@ class BaseSmartEnterAdapter {
     getPromptButtonOffset() {
         return { top: 0, left: 0 };
     }
+
+    /**
+     * 获取电子宠物（输入框上方动画）位置偏移量
+     * 用于微调宠物相对于定位参考元素顶部的位置，负值向上
+     * @returns {{ top: number, left: number }}
+     */
+    getAnimationOffset() {
+        return { top: 0, left: 0 };
+    }
 }

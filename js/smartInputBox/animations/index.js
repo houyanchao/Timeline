@@ -16,6 +16,7 @@ class InputBoxAnimationManager {
         this._storageKey = 'activeAnimation';
         this._petDataKey = 'animationPetData';
         this._petData = {};
+        this._needsPlacement = false;
     }
 
     register(animation) {
@@ -112,6 +113,8 @@ class InputBoxAnimationManager {
     updatePosition(referenceRect) {
         if (this._active) {
             this._active.updatePosition(referenceRect);
+            // 首次拿到有效布局后，把宠物放到可见位置（而不是停在屏幕外的起点）
+            if (this._needsPlacement) this._ensureVisible();
         }
     }
 
@@ -120,13 +123,63 @@ class InputBoxAnimationManager {
     }
 
     pauseActive() {
-        if (!this._active?._el) return;
-        this._active._el.classList.add('anim-paused');
+        const el = this._active?._el;
+        if (!el) return;
+        if (!el.classList.contains('anim-paused')) el.classList.add('anim-paused');
+        // 停下时如果恰好走到了屏幕外，把它挪回可见区域，避免"宠物不见了"
+        this._ensureVisible();
+    }
+
+    /**
+     * 确保领队处于可见区域内。行进动画是 translateX(-100%) → translateX(--pw + 10px)
+     * 的无限循环，两端都在遮罩之外；若当前停在屏幕外，则通过 WAAPI 把进度
+     * 调整到刚从左侧走进来的位置，并做一个淡入。
+     */
+    _ensureVisible() {
+        const el = this._active?._el;
+        if (!el) return;
+        const group = el.querySelector('[class$="-group"]');
+        if (!group || typeof group.getAnimations !== 'function') return;
+
+        const containerWidth = el.clientWidth;
+        const groupWidth = group.offsetWidth;
+        if (!containerWidth || !groupWidth) return;
+
+        const march = group.getAnimations().find(a => /march$/.test(a.animationName || ''));
+        const duration = march?.effect?.getComputedTiming?.().duration;
+        if (!march || !duration || typeof march.currentTime !== 'number') return;
+
+        // 领队是最右侧那一只；遮罩两端各有 30px 渐隐
+        const leaderWidth = group.lastElementChild?.offsetWidth || 0;
+        const edgeFade = 30;
+        const travel = containerWidth + 10 + groupWidth;
+        const progress = (march.currentTime % duration) / duration;
+        const groupLeft = -groupWidth + progress * travel;
+        const leaderCenter = groupLeft + groupWidth - leaderWidth / 2;
+        const isVisible = leaderCenter > edgeFade && leaderCenter < containerWidth - edgeFade;
+
+        this._needsPlacement = false;
+        if (isVisible) return;
+
+        // 目标：整队刚好走出左侧遮罩；队伍太长时至少保证领队完整可见
+        const targetLeft = Math.min(edgeFade, containerWidth - edgeFade - groupWidth);
+        const targetProgress = Math.max(0, Math.min(1, (targetLeft + groupWidth) / travel));
+
+        // 先关掉过渡瞬间置为透明（否则会触发一次 1→0 的过渡，随后又被反向打断，看不到淡入），
+        // 强制刷新样式后同步恢复，得到干净的 0→1 淡入。全程同步、不依赖 rAF，
+        // 这样后台标签页里生成结束时也不会残留 opacity:0 的内联样式。
+        group.style.transition = 'none';
+        group.style.opacity = '0';
+        void getComputedStyle(group).opacity;
+        march.currentTime = targetProgress * duration;
+        group.style.transition = '';
+        group.style.opacity = '';
     }
 
     resumeActive() {
-        if (!this._active?._el) return;
-        this._active._el.classList.remove('anim-paused');
+        const el = this._active?._el;
+        if (!el?.classList.contains('anim-paused')) return;
+        el.classList.remove('anim-paused');
     }
 
     destroy() {
@@ -154,6 +207,7 @@ class InputBoxAnimationManager {
             data.count = Math.min(correct, anim.maxCount);
         }
         anim.create(data.count);
+        this._needsPlacement = true;
         if (anim._el) {
             const clickTarget = anim._el.querySelector('[class$="-group"], [class$="-runner"]') || anim._el;
             clickTarget.addEventListener('click', () => {
@@ -185,6 +239,7 @@ class InputBoxAnimationManager {
             this._active.destroy();
             this._active = null;
         }
+        this._needsPlacement = false;
     }
 
     _startAIStateListener() {
